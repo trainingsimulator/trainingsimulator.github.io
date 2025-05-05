@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Basketball Training Simulator</title>
+  <title data-i18n="app_title">Basketball Training Simulator</title>
   <!-- Materialize CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet"/>
   <style>
@@ -28,15 +28,12 @@
       display: inline-block;
     }
     input[type="text"],
-    input[type="number"] {
-      box-shadow: none !important;
-      border-bottom: none !important;
-      margin-bottom: 0;
-    }
+    input[type="number"],
     select {
       box-shadow: none !important;
       border-bottom: none !important;
       background-image: none !important;
+      margin-bottom: 0;
     }
     select#coachQuality {
       background-color: #e3f2fd;
@@ -53,37 +50,50 @@
       border-radius: 4px;
       padding: 4px 8px;
     }
+    .lang-toggle {
+      position: absolute; top:10px; right:10px;
+    }
+    .lang-toggle img {
+      width:28px; height:20px; margin-left:5px; cursor:pointer;
+    }
   </style>
 </head>
 <body>
+  <div class="lang-toggle">
+    <img src="https://flagcdn.com/w40/gb.png" alt="English" onclick="setLanguage('en')">
+    <img src="https://flagcdn.com/w40/pt.png" alt="Português" onclick="setLanguage('pt')">
+  </div>
+
   <div class="container">
     <!-- Instructions Accordion -->
     <ul id="instructionsAccordion" class="collapsible">
       <li>
-        <div class="collapsible-header"><strong>Instruções e Tradução</strong></div>
+        <div class="collapsible-header" data-i18n="instructionsHeader">
+          <strong>Instruções e Tradução</strong>
+        </div>
         <div class="collapsible-body">
           <div class="row">
             <div class="col s12 m6">
-              <strong>Instruções:</strong>
+              <strong data-i18n="instructionsTitle">Instruções:</strong>
               <ol>
-                <li>Preencha cada nível de habilidade do jogador.</li>
-                <li>Clique em “Add Season” para adicionar uma temporada de 14 semanas.</li>
-                <li>Selecione um tipo de treino para cada semana.</li>
+                <li data-i18n="instr1">Preencha cada nível de habilidade do jogador.</li>
+                <li data-i18n="instr2">Clique em “Add Season” para adicionar uma temporada de 14 semanas.</li>
+                <li data-i18n="instr3">Selecione um tipo de treino para cada semana.</li>
               </ol>
             </div>
             <div class="col s12 m6">
-              <strong>Tradução:</strong>
+              <strong data-i18n="translationTitle">Tradução:</strong>
               <ul>
-                <li>JS = Lançamento</li>
-                <li>JR = Distância de Lançamento</li>
-                <li>OD = Defesa Exterior</li>
-                <li>DR = Penetração</li>
-                <li>HA = Drible</li>
-                <li>PA = Passe</li>
-                <li>IS = Lançamento Interior</li>
-                <li>ID = Defesa Interior</li>
-                <li>RB = Ressalto</li>
-                <li>SB = Desarme de Lançamento</li>
+                <li><span data-i18n="JS">JS</span> = <span data-i18n="JS_full">Lançamento</span></li>
+                <li><span data-i18n="JR">JR</span> = <span data-i18n="JR_full">Distância de Lançamento</span></li>
+                <li><span data-i18n="OD">OD</span> = <span data-i18n="OD_full">Defesa Exterior</span></li>
+                <li><span data-i18n="DR">DR</span> = <span data-i18n="DR_full">Penetração</span></li>
+                <li><span data-i18n="HA">HA</span> = <span data-i18n="HA_full">Drible</span></li>
+                <li><span data-i18n="PA">PA</span> = <span data-i18n="PA_full">Passe</span></li>
+                <li><span data-i18n="IS">IS</span> = <span data-i18n="IS_full">Lançamento Interior</span></li>
+                <li><span data-i18n="ID">ID</span> = <span data-i18n="ID_full">Defesa Interior</span></li>
+                <li><span data-i18n="RB">RB</span> = <span data-i18n="RB_full">Ressalto</span></li>
+                <li><span data-i18n="SB">SB</span> = <span data-i18n="SB_full">Desarme de Lançamento</span></li>
               </ul>
             </div>
           </div>
@@ -94,56 +104,67 @@
     <!-- Fixed Controls -->
     <div class="fixed-controls row valign-wrapper">
       <div class="col s12 m4">
-        <a class="waves-effect waves-light btn green" onclick="addSeason()">Add Season</a>
-        <a class="waves-effect waves-light btn red" onclick="removeSeason()">Remove Season</a>
+        <a class="waves-effect waves-light btn green" onclick="addSeason()" data-i18n="addSeason">Add Season</a>
+        <a class="waves-effect waves-light btn red" onclick="removeSeason()" data-i18n="removeSeason">Remove Season</a>
       </div>
       <div class="col s12 m4 offset-m4 input-field">
         <select id="coachQuality">
-          <option value="0.88">Minimal</option>
-          <option value="0.91">Basic</option>
-          <option value="0.94">Competent</option>
-          <option value="0.97">Advanced</option>
-          <option value="1.00" selected>Superior</option>
-          <option value="1.03">Exceptional</option>
-          <option value="1.06">World Class</option>
+          <option value="0.88" data-i18n="cq_minimal">Minimal</option>
+          <option value="0.91" data-i18n="cq_basic">Basic</option>
+          <option value="0.94" data-i18n="cq_competent">Competent</option>
+          <option value="0.97" data-i18n="cq_advanced">Advanced</option>
+          <option value="1.00" selected data-i18n="cq_superior">Superior</option>
+          <option value="1.03" data-i18n="cq_exceptional">Exceptional</option>
+          <option value="1.06" data-i18n="cq_worldclass">World Class</option>
         </select>
-        <label>Coach Quality</label>
+        <label data-i18n="coachQualityLabel">Coach Quality</label>
       </div>
     </div>
 
     <!-- Player Input -->
     <div class="player-card">
-      <h5>Player Input</h5>
+      <h5 data-i18n="playerInputHeader">Player Input</h5>
       <table class="highlight">
         <thead>
           <tr>
-            <th>Name</th><th>Age</th>
-            <th>JS</th><th>JR</th><th>OD</th><th>HA</th><th>DR</th>
-            <th>PA</th><th>IS</th><th>ID</th><th>RB</th><th>SB</th>
-            <th>Height</th><th>Potential</th><th>Position</th>
+            <th data-i18n="th_name">Name</th>
+            <th data-i18n="th_age">Age</th>
+            <th data-i18n="th_JS">JS</th>
+            <th data-i18n="th_JR">JR</th>
+            <th data-i18n="th_OD">OD</th>
+            <th data-i18n="th_HA">HA</th>
+            <th data-i18n="th_DR">DR</th>
+            <th data-i18n="th_PA">PA</th>
+            <th data-i18n="th_IS">IS</th>
+            <th data-i18n="th_ID">ID</th>
+            <th data-i18n="th_RB">RB</th>
+            <th data-i18n="th_SB">SB</th>
+            <th data-i18n="th_height">Height</th>
+            <th data-i18n="th_potential">Potential</th>
+            <th data-i18n="th_position">Position</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><input id="playerName" type="text" value="Name"></td>
             <td><input id="playerAge" type="number" min="18" max="35" value="18" style="max-width:4rem;"></td>
-            <td><input id="JS" type="number" value="7" min="0" max="30"></td>
-            <td><input id="JR" type="number" value="7" min="0" max="30"></td>
-            <td><input id="OD" type="number" value="7" min="0" max="30"></td>
-            <td><input id="HA" type="number" value="7" min="0" max="30"></td>
-            <td><input id="DR" type="number" value="7" min="0" max="30"></td>
-            <td><input id="PA" type="number" value="7" min="0" max="30"></td>
-            <td><input id="IS" type="number" value="7" min="0" max="30"></td>
-            <td><input id="ID" type="number" value="7" min="0" max="30"></td>
-            <td><input id="RB" type="number" value="7" min="0" max="30"></td>
-            <td><input id="SB" type="number" value="7" min="0" max="30"></td>
+            <td><input id="JS"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="JR"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="OD"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="HA"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="DR"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="PA"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="IS"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="ID"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="RB"  type="number" value="7" min="0" max="30"></td>
+            <td><input id="SB"  type="number" value="7" min="0" max="30"></td>
             <td>
               <select id="height"></select>
-              <label>Height</label>
+              <label data-i18n="heightLabel">Height</label>
             </td>
             <td>
               <select id="potential"></select>
-              <label>Potential</label>
+              <label data-i18n="potentialLabel">Potential</label>
             </td>
             <td><input id="position" type="text" value="PG"></td>
           </tr>
@@ -153,12 +174,21 @@
 
     <!-- Stats After Training -->
     <div class="player-card">
-      <h5>Player Stats After Training</h5>
+      <h5 data-i18n="statsAfterHeader">Player Stats After Training</h5>
       <table class="highlight">
         <thead>
           <tr>
-            <th>Name</th><th>JS</th><th>JR</th><th>OD</th><th>HA</th><th>DR</th>
-            <th>PA</th><th>IS</th><th>ID</th><th>RB</th><th>SB</th>
+            <th data-i18n="th_name">Name</th>
+            <th data-i18n="th_JS">JS</th>
+            <th data-i18n="th_JR">JR</th>
+            <th data-i18n="th_OD">OD</th>
+            <th data-i18n="th_HA">HA</th>
+            <th data-i18n="th_DR">DR</th>
+            <th data-i18n="th_PA">PA</th>
+            <th data-i18n="th_IS">IS</th>
+            <th data-i18n="th_ID">ID</th>
+            <th data-i18n="th_RB">RB</th>
+            <th data-i18n="th_SB">SB</th>
           </tr>
         </thead>
         <tbody>
@@ -172,22 +202,124 @@
 
     <div class="row">
       <div class="col s12">
-        <a class="waves-effect waves-light btn orange" onclick="exportTrainingPlan()">Export Training Plan (.xlsx)</a>
+        <a class="waves-effect waves-light btn orange"
+           onclick="exportTrainingPlan()"
+           data-i18n="exportButton">
+          Export Training Plan (.xlsx)
+        </a>
       </div>
     </div>
-    
-
   </div>
 
-  <!-- Materialize JS -->
+  <!-- Materialize JS + Translation + Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <script src="logic.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function(){
+    const i18n = {
+      en: {
+        app_title: "Basketball Training Simulator",
+        instructionsHeader: "Instructions & Translation",
+        instructionsTitle:  "Instructions:",
+        instr1:             "Fill in each player's skill level.",
+        instr2:             "Click “Add Season” to add a 14-week season.",
+        instr3:             "Select a training type for each week.",
+        translationTitle:   "Translation:",
+        JS:   "JS",  JS_full:   "Jump Shot",
+        JR:   "JR",  JR_full:   "Jump Range",
+        OD:   "OD",  OD_full:   "Outside Defense",
+        DR:   "DR",  DR_full:   "Drive",
+        HA:   "HA",  HA_full:   "Handle",
+        PA:   "PA",  PA_full:   "Pass",
+        IS:   "IS",  IS_full:   "Inside Shot",
+        ID:   "ID",  ID_full:   "Inside Defense",
+        RB:   "RB",  RB_full:   "Rebound",
+        SB:   "SB",  SB_full:   "Shot Block",
+        addSeason:        "Add Season",
+        removeSeason:     "Remove Season",
+        cq_minimal:       "Minimal",
+        cq_basic:         "Basic",
+        cq_competent:     "Competent",
+        cq_advanced:      "Advanced",
+        cq_superior:      "Superior",
+        cq_exceptional:   "Exceptional",
+        cq_worldclass:    "World Class",
+        coachQualityLabel:"Coach Quality",
+        playerInputHeader:"Player Input",
+        th_name:   "Name", th_age:   "Age",
+        th_JS:     "JS",   th_JR:   "JR",
+        th_OD:     "OD",   th_HA:   "HA",
+        th_DR:     "DR",   th_PA:   "PA",
+        th_IS:     "IS",   th_ID:   "ID",
+        th_RB:     "RB",   th_SB:   "SB",
+        th_height:"Height", heightLabel:"Height",
+        th_potential:"Potential", potentialLabel:"Potential",
+        th_position:"Position",
+        statsAfterHeader:"Player Stats After Training",
+        exportButton:"Export Training Plan (.xlsx)",
+        applyButton: "Apply"
+      },
+      pt: {
+        app_title: "Simulador de Treino de Basquetebol",
+        instructionsHeader: "Instruções e Tradução",
+        instructionsTitle:  "Instruções:",
+        instr1:             "Preencha cada nível de habilidade do jogador.",
+        instr2:             "Clique em “Add Season” para adicionar uma temporada de 14 semanas.",
+        instr3:             "Selecione um tipo de treino para cada semana.",
+        translationTitle:   "Tradução:",
+        JS_full:   "Lançamento",
+        JR_full:   "Distância de Lançamento",
+        OD_full:   "Defesa Exterior",
+        DR_full:   "Penetração",
+        HA_full:   "Drible",
+        PA_full:   "Passe",
+        IS_full:   "Lançamento Interior",
+        ID_full:   "Defesa Interior",
+        RB_full:   "Ressalto",
+        SB_full:   "Desarme de Lançamento",
+        addSeason:        "Adicionar Temporada",
+        removeSeason:     "Remover Temporada",
+        cq_minimal:       "Mínimo",
+        cq_basic:         "Básico",
+        cq_competent:     "Competente",
+        cq_advanced:      "Avançado",
+        cq_superior:      "Superior",
+        cq_exceptional:   "Excecional",
+        cq_worldclass:    "Classe Mundial",
+        coachQualityLabel:"Qualidade do Treinador",
+        playerInputHeader:"Entrada do Jogador",
+        th_name:   "Nome", th_age:   "Idade",
+        th_JS:     "JS",   th_JR:   "JR",
+        th_OD:     "OD",   th_HA:   "HA",
+        th_DR:     "DR",   th_PA:   "PA",
+        th_IS:     "IS",   th_ID:   "ID",
+        th_RB:     "RB",   th_SB:   "SB",
+        th_height:"Altura", heightLabel:"Altura",
+        th_potential:"Potencial", potentialLabel:"Potencial",
+        th_position:"Posição",
+        statsAfterHeader:"Estatísticas Após Treino",
+        exportButton:"Exportar Plano (.xlsx)",
+        applyButton: "Aplicar Treino"
+      }
+    };
+
+    function setLanguage(lang) {
+      document.title = i18n[lang].app_title;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key] != null) {
+          el.textContent = i18n[lang][key];
+        }
+      });
+      // re-init all selects so new <option> labels take effect
+      M.FormSelect.init(document.querySelectorAll('select'));
+      localStorage.setItem('lang', lang);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
       M.Collapsible.init(document.querySelectorAll('.collapsible'));
       M.FormSelect.init(document.querySelectorAll('select'));
+      setLanguage(localStorage.getItem('lang') || 'en');
     });
   </script>
 </body>

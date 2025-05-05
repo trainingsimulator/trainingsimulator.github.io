@@ -73,6 +73,7 @@ const heightMultipliers = {
   "229cm": { JS:1,   JR:0.45, OD:0.45, HA:1, DR:1,   PA:1,   IS:1.55, ID:1.55, RB:1.55, SB:1.55 }
 };
 
+
 function getAgeCoefficient(age) {
   const table = {
     18:1.00, 19:0.95, 20:0.88, 21:0.78, 22:0.7, 23:0.6, 24:0.51,
@@ -81,6 +82,32 @@ function getAgeCoefficient(age) {
   };
   return table[age] || 0;
 }
+
+window.translations = {
+  en: {
+    Season:      "Season",
+    Week:        "Week",
+    TrainingType:"Training Type",
+    CoachLevel:  "Coach Level",
+    Name:        "Name",
+    Height:      "Height",
+    Age:         "Age",
+    // baseStats abbreviations will be left as-is, or add entries here to translate them:
+    JS: "JS", JR: "JR", OD: "OD", HA: "HA", DR: "DR",
+    PA: "PA", IS: "IS", ID: "ID", RB: "RB", SB: "SB"
+  },
+  pt: {
+    Season:      "Temporada",
+    Week:        "Semana",
+    TrainingType:"Tipo de Treino",
+    CoachLevel:  "Nível do Treinador",
+    Name:        "Nome",
+    Height:      "Altura",
+    Age:         "Idade",
+    JS: "JS", JR: "JR", OD: "OD", HA: "HA", DR: "DR",
+    PA: "PA", IS: "IS", ID: "ID", RB: "RB", SB: "SB"
+  }
+};
 
 function simulateTraining() {
   const coachCoefficient = parseFloat(document.getElementById("coachQuality").value);
@@ -162,7 +189,7 @@ function addSeason() {
     <div class="input-field">
       <span>Apply to all weeks:</span>
       <select id="seasonApplyAll${seasonCount}" class="apply-all-select">${applyOpts}</select>
-      <button class="btn green" onclick="applyTrainingToSeason(${seasonCount})">APPLY</button>
+      <button class="btn green" data-i18n="applyButton" onclick="applyTrainingToSeason(${seasonCount})">APPLY</button>
     </div>
     <table class="highlight">
       <thead><tr><th>Week</th><th>Training Type</th></tr></thead>
@@ -243,126 +270,137 @@ function populateStaticDropdowns() {
 
 function exportTrainingPlan() {
   if (seasonCount === 0) {
-    alert("Please add at least one season and fill in training weeks before exporting.");
+    alert(translations[localStorage.getItem('lang')||'en'].TrainingType + 
+          " – " +
+          (translations[localStorage.getItem('lang')||'en'].Week) + 
+          ": add at least one season."); 
     return;
   }
 
-  const coachSelect = document.getElementById("coachQuality");
+  const lang = localStorage.getItem('lang') || 'en';
+  const t    = translations[lang];
+
+  const coachSelect     = document.getElementById("coachQuality");
   const coachLevelLabel = coachSelect.options[coachSelect.selectedIndex].text;
-  const coachCoefficient = parseFloat(coachSelect.value);
-  const height = document.getElementById("height").value;
-  const playerName = document.getElementById("playerName").value;
+  const coachCoefficient= parseFloat(coachSelect.value);
+  const height          = document.getElementById("height").value;
+  const playerName      = document.getElementById("playerName").value;
 
   // Sheet 1: Training Plan
-  const seasonPlan = [["Season", "Week", "Training Type", "Coach Level", "Name"]];
+  const seasonPlan = [[
+    t.Season, t.Week, t.TrainingType, t.CoachLevel, t.Name
+  ]];
   const trainingData = [];
 
   for (let s = 1; s <= seasonCount; s++) {
-    const age = parseInt(document.getElementById(`seasonAge${s}`).value, 10);
+    const age     = parseInt(document.getElementById(`seasonAge${s}`).value, 10);
     const selects = document.querySelectorAll(`#seasonBody${s} .training-select`);
-    selects.forEach((select, i) => {
-      const training = select.value;
+    selects.forEach((sel, i) => {
+      const training = sel.value;
       if (!training) return;
-      seasonPlan.push([`Season ${s}`, `Week ${i + 1}`, training, coachLevelLabel, playerName]);
-      trainingData.push({ season: s, week: i + 1, training, age });
+      seasonPlan.push([
+        `${t.Season} ${s}`,
+        `${t.Week} ${i+1}`,
+        training,
+        coachLevelLabel,
+        playerName
+      ]);
+      trainingData.push({ season: s, week: i+1, training, age });
     });
   }
 
   if (trainingData.length === 0) {
-    alert("At least one week must have training to export.");
+    alert(t.TrainingType + " – " + t.Week + ": " + 
+          (lang === 'pt' 
+            ? "pelo menos uma semana deve ter treino" 
+            : "at least one week must have training")
+    );
     return;
   }
 
   // Sheet 2: Stat Progress
-  const weeklyStats = [["Season", "Week", "Name", "Height", "Age", ...baseStats]];
+  const weeklyStats = [[
+    t.Season, t.Week, t.Name, t.Height, t.Age, 
+    ...baseStats.map(st => t[st] || st)
+  ]];
   const heightMap = heightMultipliers[height] || {};
   const playerStats = {};
-  baseStats.forEach(stat => {
-    playerStats[stat] = parseFloat(document.getElementById(stat).value) || 0;
+  baseStats.forEach(st => {
+    playerStats[st] = parseFloat(document.getElementById(st).value) || 0;
   });
 
   trainingData.forEach(({ season, week, training, age }) => {
     const ageCoef = getAgeCoefficient(age);
-    const effect = trainingEffects[training];
+    const effect  = trainingEffects[training];
     if (!effect) return;
 
     const gains = {};
     for (let st in effect) {
       gains[st] = effect[st] * ageCoef * coachCoefficient;
     }
-
     for (let st in gains) {
       for (let key in elasticEffects) {
-        const [b, t] = key.split("->");
-        if (b === st && playerStats[t] > playerStats[b]) {
-          const diff = playerStats[t] - playerStats[b];
+        const [b,tgt] = key.split("->");
+        if (b===st && playerStats[tgt]>playerStats[b]) {
+          const diff = playerStats[tgt]-playerStats[b];
           gains[b] += gains[b] * (diff * elasticEffects[key]);
         }
       }
     }
-
     for (let st in gains) {
-      gains[st] *= (heightMap[st] || 1);
+      gains[st] *= (heightMap[st]||1);
     }
-
     for (let st in gains) {
       playerStats[st] += gains[st];
     }
 
     weeklyStats.push([
-      `Season ${season}`, `Week ${week}`, playerName, height, age,
+      `${t.Season} ${season}`,
+      `${t.Week} ${week}`,
+      playerName,
+      height,
+      age,
       ...baseStats.map(st => playerStats[st].toFixed(2))
     ]);
   });
 
   // Create workbook
-  const wb = XLSX.utils.book_new();
+  const wb  = XLSX.utils.book_new();
   const ws1 = XLSX.utils.aoa_to_sheet(seasonPlan);
   const ws2 = XLSX.utils.aoa_to_sheet(weeklyStats);
 
-  // Freeze first row in each sheet
-  ws1['!freeze'] = { xSplit: 0, ySplit: 1 };
-  ws2['!freeze'] = { xSplit: 0, ySplit: 1 };
+  // Freeze top row
+  ws1['!freeze'] = { xSplit:0, ySplit:1 };
+  ws2['!freeze'] = { xSplit:0, ySplit:1 };
 
-
-  // Apply formatting to both sheets
+  // Format both sheets
   [ws1, ws2].forEach(ws => {
     const range = XLSX.utils.decode_range(ws["!ref"]);
-
-    // Bold headers
+    // Bold & center headers
     for (let C = range.s.c; C <= range.e.c; ++C) {
-      const headerCell = ws[XLSX.utils.encode_cell({ r: 0, c: C })];
-      if (headerCell) {
-        headerCell.s = {
-          font: { bold: true },
-          alignment: { horizontal: "center", vertical: "center" }
-        };
-      }
+      const hdr = ws[XLSX.utils.encode_cell({r:0,c:C})];
+      if (hdr) hdr.s = {
+        font: { bold:true },
+        alignment: { horizontal:"center", vertical:"center" }
+      };
     }
-
-    // Center all other cells and adjust column widths
-    const colWidths = [];
+    // Auto‐width & center data
+    const cols = [];
     for (let C = range.s.c; C <= range.e.c; ++C) {
-      let maxLength = 10;
+      let max = 10;
       for (let R = range.s.r; R <= range.e.r; ++R) {
-        const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+        const cell = ws[XLSX.utils.encode_cell({r:R,c:C})];
         if (cell && cell.v) {
-          const len = cell.v.toString().length;
-          if (len > maxLength) maxLength = len;
-          if (R > 0) {
-            cell.s = { alignment: { horizontal: "center", vertical: "center" } };
-          }
+          max = Math.max(max, cell.v.toString().length);
+          if (R>0) cell.s = { alignment:{horizontal:"center",vertical:"center"} };
         }
       }
-      colWidths.push({ wch: maxLength + 2 });
+      cols.push({ wch: max+2 });
     }
-    ws["!cols"] = colWidths;
+    ws["!cols"] = cols;
   });
 
-  XLSX.utils.book_append_sheet(wb, ws1, "Training Plan");
-  XLSX.utils.book_append_sheet(wb, ws2, "Stat Progress");
-
-  XLSX.writeFile(wb, "Training_Plan.xlsx");
+  XLSX.utils.book_append_sheet(wb, ws1, lang==="pt"?"Plano de Treino":"Training Plan");
+  XLSX.utils.book_append_sheet(wb, ws2, lang==="pt"?"Progresso de Stats":"Stat Progress");
+  XLSX.writeFile(wb, `Training_Plan_${lang}.xlsx`);
 }
-
-
