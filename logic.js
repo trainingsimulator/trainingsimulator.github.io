@@ -244,11 +244,10 @@ function exportTrainingPlan() {
   const coachLevelLabel = coachSelect.options[coachSelect.selectedIndex].text;
   const coachCoefficient = parseFloat(coachSelect.value);
   const height = document.getElementById("height").value;
-  const baseAge = parseInt(document.getElementById("playerAge").value, 10);
   const playerName = document.getElementById("playerName").value;
 
-  // Sheet 1: Season plan
-  const seasonPlan = [["Season", "Week", "Training Type", "Coach Level"]];
+  // Sheet 1: Training Plan
+  const seasonPlan = [["Season", "Week", "Training Type", "Coach Level", "Name"]];
   const trainingData = [];
 
   for (let s = 1; s <= seasonCount; s++) {
@@ -257,7 +256,7 @@ function exportTrainingPlan() {
     selects.forEach((select, i) => {
       const training = select.value;
       if (!training) return;
-      seasonPlan.push([`Season ${s}`, `Week ${i + 1}`, training, coachLevelLabel]);
+      seasonPlan.push([`Season ${s}`, `Week ${i + 1}`, training, coachLevelLabel, playerName]);
       trainingData.push({ season: s, week: i + 1, training, age });
     });
   }
@@ -267,8 +266,8 @@ function exportTrainingPlan() {
     return;
   }
 
-  // Sheet 2: Stat progress
-  const weeklyStats = [["Season", "Week", "Height", "Age", "Coach Level", ...baseStats]];
+  // Sheet 2: Stat Progress
+  const weeklyStats = [["Season", "Week", "Name", "Height", "Age", ...baseStats]];
   const heightMap = heightMultipliers[height] || {};
   const playerStats = {};
   baseStats.forEach(stat => {
@@ -304,11 +303,7 @@ function exportTrainingPlan() {
     }
 
     weeklyStats.push([
-      `Season ${season}`,
-      `Week ${week}`,
-      height,
-      age,
-      coachLevelLabel,
+      `Season ${season}`, `Week ${week}`, playerName, height, age,
       ...baseStats.map(st => playerStats[st].toFixed(2))
     ]);
   });
@@ -318,17 +313,43 @@ function exportTrainingPlan() {
   const ws1 = XLSX.utils.aoa_to_sheet(seasonPlan);
   const ws2 = XLSX.utils.aoa_to_sheet(weeklyStats);
 
-  // Center headers and data
+  // Freeze first row in each sheet
+  ws1['!freeze'] = { xSplit: 0, ySplit: 1 };
+  ws2['!freeze'] = { xSplit: 0, ySplit: 1 };
+
+
+  // Apply formatting to both sheets
   [ws1, ws2].forEach(ws => {
     const range = XLSX.utils.decode_range(ws["!ref"]);
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
-        if (cell) {
-          cell.s = { alignment: { horizontal: "center", vertical: "center" } };
-        }
+
+    // Bold headers
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const headerCell = ws[XLSX.utils.encode_cell({ r: 0, c: C })];
+      if (headerCell) {
+        headerCell.s = {
+          font: { bold: true },
+          alignment: { horizontal: "center", vertical: "center" }
+        };
       }
     }
+
+    // Center all other cells and adjust column widths
+    const colWidths = [];
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      let maxLength = 10;
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+        if (cell && cell.v) {
+          const len = cell.v.toString().length;
+          if (len > maxLength) maxLength = len;
+          if (R > 0) {
+            cell.s = { alignment: { horizontal: "center", vertical: "center" } };
+          }
+        }
+      }
+      colWidths.push({ wch: maxLength + 2 });
+    }
+    ws["!cols"] = colWidths;
   });
 
   XLSX.utils.book_append_sheet(wb, ws1, "Training Plan");
@@ -336,3 +357,5 @@ function exportTrainingPlan() {
 
   XLSX.writeFile(wb, "Training_Plan.xlsx");
 }
+
+
