@@ -181,9 +181,16 @@ function addSeason() {
 
   container.appendChild(div);
   M.FormSelect.init(div.querySelectorAll("select"));
+  
   div.querySelectorAll(".training-select").forEach(sel => {
     sel.addEventListener("change", simulateTraining);
   });
+  
+  // Add change listener to age input
+  const ageInput = div.querySelector(`#seasonAge${seasonCount}`);
+  if (ageInput) {
+    ageInput.addEventListener("change", simulateTraining);
+  }
 }
 
 function removeSeason() {
@@ -219,7 +226,7 @@ function populateStaticDropdowns() {
   }, 0);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+ window.addEventListener("DOMContentLoaded", () => {
   populateStaticDropdowns();
   baseStats.forEach(st => {
     const el = document.getElementById(st);
