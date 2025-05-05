@@ -233,3 +233,106 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   simulateTraining();
 });
+
+function exportTrainingPlan() {
+  if (seasonCount === 0) {
+    alert("Please add at least one season and fill in training weeks before exporting.");
+    return;
+  }
+
+  const coachSelect = document.getElementById("coachQuality");
+  const coachLevelLabel = coachSelect.options[coachSelect.selectedIndex].text;
+  const coachCoefficient = parseFloat(coachSelect.value);
+  const height = document.getElementById("height").value;
+  const baseAge = parseInt(document.getElementById("playerAge").value, 10);
+  const playerName = document.getElementById("playerName").value;
+
+  // Sheet 1: Season plan
+  const seasonPlan = [["Season", "Week", "Training Type", "Coach Level"]];
+  const trainingData = [];
+
+  for (let s = 1; s <= seasonCount; s++) {
+    const age = parseInt(document.getElementById(`seasonAge${s}`).value, 10);
+    const selects = document.querySelectorAll(`#seasonBody${s} .training-select`);
+    selects.forEach((select, i) => {
+      const training = select.value;
+      if (!training) return;
+      seasonPlan.push([`Season ${s}`, `Week ${i + 1}`, training, coachLevelLabel]);
+      trainingData.push({ season: s, week: i + 1, training, age });
+    });
+  }
+
+  if (trainingData.length === 0) {
+    alert("At least one week must have training to export.");
+    return;
+  }
+
+  // Sheet 2: Stat progress
+  const weeklyStats = [["Season", "Week", "Height", "Age", "Coach Level", ...baseStats]];
+  const heightMap = heightMultipliers[height] || {};
+  const playerStats = {};
+  baseStats.forEach(stat => {
+    playerStats[stat] = parseFloat(document.getElementById(stat).value) || 0;
+  });
+
+  trainingData.forEach(({ season, week, training, age }) => {
+    const ageCoef = getAgeCoefficient(age);
+    const effect = trainingEffects[training];
+    if (!effect) return;
+
+    const gains = {};
+    for (let st in effect) {
+      gains[st] = effect[st] * ageCoef * coachCoefficient;
+    }
+
+    for (let st in gains) {
+      for (let key in elasticEffects) {
+        const [b, t] = key.split("->");
+        if (b === st && playerStats[t] > playerStats[b]) {
+          const diff = playerStats[t] - playerStats[b];
+          gains[b] += gains[b] * (diff * elasticEffects[key]);
+        }
+      }
+    }
+
+    for (let st in gains) {
+      gains[st] *= (heightMap[st] || 1);
+    }
+
+    for (let st in gains) {
+      playerStats[st] += gains[st];
+    }
+
+    weeklyStats.push([
+      `Season ${season}`,
+      `Week ${week}`,
+      height,
+      age,
+      coachLevelLabel,
+      ...baseStats.map(st => playerStats[st].toFixed(2))
+    ]);
+  });
+
+  // Create workbook
+  const wb = XLSX.utils.book_new();
+  const ws1 = XLSX.utils.aoa_to_sheet(seasonPlan);
+  const ws2 = XLSX.utils.aoa_to_sheet(weeklyStats);
+
+  // Center headers and data
+  [ws1, ws2].forEach(ws => {
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+        if (cell) {
+          cell.s = { alignment: { horizontal: "center", vertical: "center" } };
+        }
+      }
+    }
+  });
+
+  XLSX.utils.book_append_sheet(wb, ws1, "Training Plan");
+  XLSX.utils.book_append_sheet(wb, ws2, "Stat Progress");
+
+  XLSX.writeFile(wb, "Training_Plan.xlsx");
+}
