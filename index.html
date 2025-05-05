@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Basketball Training Simulator</title>
+  <!-- Materialize CSS instead of Bootstrap -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet"/>
+  <style>
+    .fixed-controls {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+    .player-card, .season-card {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+    table th, table td {
+      padding: 0 1rem;
+    }
+    .season-age-input {
+      max-width: 5rem;
+      margin-right: 1rem;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Instructions Accordion -->
+    <ul id="instructionsAccordion" class="collapsible">
+      <li>
+        <div class="collapsible-header"><strong>Instruções e Tradução</strong></div>
+        <div class="collapsible-body">
+          <div class="row">
+            <div class="col s12 m6">
+              <strong>Instruções:</strong>
+              <ol>
+                <li>Preencha cada nível de habilidade do jogador.</li>
+                <li>Clique em “Add Season” para adicionar uma temporada de 14 semanas.</li>
+                <li>Selecione um tipo de treino para cada semana.</li>
+              </ol>
+            </div>
+            <div class="col s12 m6">
+              <strong>Tradução:</strong>
+              <ul>
+                <li>JS = Lançamento</li>
+                <li>JR = Distância de Lançamento</li>
+                <li>OD = Defesa Exterior</li>
+                <li>DR = Penetração</li>
+                <li>HA = Drible</li>
+                <li>PA = Passe</li>
+                <li>IS = Lançamento Interior</li>
+                <li>ID = Defesa Interior</li>
+                <li>RB = Ressalto</li>
+                <li>SB = Desarme de Lançamento</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Fixed Controls -->
+    <div class="fixed-controls row valign-wrapper">
+      <div class="col s12 m4">
+        <a class="waves-effect waves-light btn green" onclick="addSeason()">Add Season</a>
+        <a class="waves-effect waves-light btn red" onclick="removeSeason()">Remove Season</a>
+        <!-- <a class="waves-effect waves-light btn blue" onclick="simulateTraining()">Simulate</a> -->
+      </div>
+      <div class="col s12 m4 offset-m4 input-field">
+        <select id="coachQuality">
+          <option value="0.88">Minimal</option>
+          <option value="0.91">Basic</option>
+          <option value="0.94">Competent</option>
+          <option value="0.97">Advanced</option>
+          <option value="1.00" selected>Superior</option>
+          <option value="1.03">Exceptional</option>
+          <option value="1.06">World Class</option>
+        </select>
+        <label>Coach Quality</label>
+      </div>
+    </div>
+
+    <!-- Player Input -->
+    <div class="player-card">
+      <h5>Player Input</h5>
+      <table class="highlight">
+        <thead>
+          <tr>
+            <th>Name</th><th>Age</th>
+            <th>JS</th><th>JR</th><th>OD</th><th>HA</th><th>DR</th>
+            <th>PA</th><th>IS</th><th>ID</th><th>RB</th><th>SB</th>
+            <th>Height</th><th>Potential</th><th>Position</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input id="playerName" type="text" value="Name"></td>
+            <td><input id="playerAge" type="number" min="18" max="35" value="18" style="max-width:4rem;"></td>
+            <td><input id="JS" type="number" value="7" min="0" max="20"></td>
+            <td><input id="JR" type="number" value="7" min="0" max="20"></td>
+            <td><input id="OD" type="number" value="7" min="0" max="20"></td>
+            <td><input id="HA" type="number" value="7" min="0" max="20"></td>
+            <td><input id="DR" type="number" value="7" min="0" max="20"></td>
+            <td><input id="PA" type="number" value="7" min="0" max="20"></td>
+            <td><input id="IS" type="number" value="7" min="0" max="20"></td>
+            <td><input id="ID" type="number" value="7" min="0" max="20"></td>
+            <td><input id="RB" type="number" value="7" min="0" max="20"></td>
+            <td><input id="SB" type="number" value="7" min="0" max="20"></td>
+            <td>
+              <select id="height"></select>
+              <label>Height</label>
+            </td>
+            <td>
+              <select id="potential"></select>
+              <label>Potential</label>
+            </td>
+            <td><input id="position" type="text" value="PG"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Stats After Training -->
+    <div class="player-card">
+      <h5>Player Stats After Training</h5>
+      <table class="highlight">
+        <thead>
+          <tr>
+            <th>Name</th><th>JS</th><th>JR</th><th>OD</th><th>HA</th><th>DR</th>
+            <th>PA</th><th>IS</th><th>ID</th><th>RB</th><th>SB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="resultRow"></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Seasons Container -->
+    <div id="seasonsContainer"></div>
+  </div>
+
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="logic.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      M.Collapsible.init(document.querySelectorAll('.collapsible'));
+      M.FormSelect.init(document.querySelectorAll('select'));
+    });
+  </script>
+</body>
+</html>
