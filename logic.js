@@ -146,6 +146,9 @@ Object.assign(window.translations.en, {
   "SB (C)":          "SB (C)",
   "SB (PF/C)":       "SB (PF/C)",
   "SB (team)":       "SB (team)",
+  "SeasonLabel":  "Season",
+  "AgeLabel":     "Age",
+  "WeekLabel":    "Week",
   
 });
 
