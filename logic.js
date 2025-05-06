@@ -4,6 +4,7 @@
 // 1) Core data & tables
 // ——————————————————————————
 
+
 const baseStats = ['JS','JR','OD','HA','DR','PA','IS','ID','RB','SB'];
 
 const trainingEffects = {
@@ -109,6 +110,8 @@ window.translations = {
   }
 };
 
+  
+
 function simulateTraining() {
   const coachCoefficient = parseFloat(document.getElementById("coachQuality").value);
   const playerStats = {};
@@ -189,7 +192,7 @@ function addSeason() {
     <div class="input-field">
       <span>Apply to all weeks:</span>
       <select id="seasonApplyAll${seasonCount}" class="apply-all-select">${applyOpts}</select>
-      <button class="btn green" data-i18n="applyButton" onclick="applyTrainingToSeason(${seasonCount})">APPLY</button>
+      <button class="btn green" data-i18n="applyButton" onclick="applyTrainingToSeason(${seasonCount})">Apply</button>
     </div>
     <table class="highlight">
       <thead><tr><th>Week</th><th>Training Type</th></tr></thead>
@@ -218,6 +221,8 @@ function addSeason() {
   if (ageInput) {
     ageInput.addEventListener("change", simulateTraining);
   }
+
+  setLanguage(localStorage.getItem('lang') || 'en');
 }
 
 function removeSeason() {
