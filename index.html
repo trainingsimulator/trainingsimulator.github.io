@@ -12,21 +12,36 @@
       background: white;
       z-index: 1000;
       padding: 1rem 0;
+      display: flex !important;
+      justify-content: space-between;
+      align-items: center;
     }
-    .player-card, .season-card {
+    .fixed-controls .btn-group a {
+      margin-right: 0.75rem;
+    }
+  
+    .player-card,
+    .season-card {
       margin-bottom: 2rem;
       padding: 1rem;
       border: 1px solid #e0e0e0;
       border-radius: 4px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: ;
     }
-    table th, table td {
+  
+    table th,
+    table td {
       padding: 0 1rem;
     }
+  
     .season-age-input {
       max-width: 5rem;
       margin-right: 1rem;
       display: inline-block;
     }
+  
     input[type="text"],
     input[type="number"],
     select {
@@ -35,28 +50,62 @@
       background-image: none !important;
       margin-bottom: 0;
     }
+  
     select#coachQuality {
       background-color: #e3f2fd;
       border-radius: 4px;
       padding: 4px 8px;
     }
+  
     .training-select {
       background-color: #e8f5e9;
       border-radius: 4px;
       padding: 4px 8px;
     }
+  
     .apply-all-select {
       background-color: #f1f8e9;
       border-radius: 4px;
       padding: 4px 8px;
     }
+  
     .lang-toggle {
-      position: absolute; top:10px; right:10px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
     }
     .lang-toggle img {
-      width:28px; height:20px; margin-left:5px; cursor:pointer;
+      width: 28px;
+      height: 20px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+  
+    /* snugly fit two-digit inputs so “10” shows fully */
+    .player-card input[type="number"],
+    .season-card input[type="number"] {
+      width: 2.4rem !important;
+      text-align: center;
+      padding: 0.1rem;
+    }
+  
+    /* force inner tables to size themselves to content, but scroll when needed */
+    .player-card .highlight,
+    .season-card .highlight {
+      overflow-x: auto;
+      overflow-y: visible;
+    }
+    .player-card .highlight table,
+    .season-card .highlight table {
+      display: block;
+      width: max-content;  /* grow to fit all columns */
+      min-width: 100%;     /* never shrink below card width */
+      white-space: nowrap;
+      border-collapse: collapse;
     }
   </style>
+  
+  
 </head>
 <body>
   <div class="lang-toggle">
@@ -84,16 +133,16 @@
             <div class="col s12 m6">
               <strong data-i18n="translationTitle">Tradução:</strong>
               <ul>
-                <li><span data-i18n="JS">JS</span> = <span data-i18n="JS_full">Lançamento</span></li>
-                <li><span data-i18n="JR">JR</span> = <span data-i18n="JR_full">Distância de Lançamento</span></li>
-                <li><span data-i18n="OD">OD</span> = <span data-i18n="OD_full">Defesa Exterior</span></li>
-                <li><span data-i18n="DR">DR</span> = <span data-i18n="DR_full">Penetração</span></li>
-                <li><span data-i18n="HA">HA</span> = <span data-i18n="HA_full">Drible</span></li>
-                <li><span data-i18n="PA">PA</span> = <span data-i18n="PA_full">Passe</span></li>
-                <li><span data-i18n="IS">IS</span> = <span data-i18n="IS_full">Lançamento Interior</span></li>
-                <li><span data-i18n="ID">ID</span> = <span data-i18n="ID_full">Defesa Interior</span></li>
-                <li><span data-i18n="RB">RB</span> = <span data-i18n="RB_full">Ressalto</span></li>
-                <li><span data-i18n="SB">SB</span> = <span data-i18n="SB_full">Desarme de Lançamento</span></li>
+                <li><span data-i18n="JS">Lan.</span> = <span data-i18n="JS_full">Lançamento</span></li>
+                <li><span data-i18n="JR">Dist.</span> = <span data-i18n="JR_full">Distância de Lançamento</span></li>
+                <li><span data-i18n="OD">DE</span> = <span data-i18n="OD_full">Defesa Exterior</span></li>
+                <li><span data-i18n="DR">Pen.</span> = <span data-i18n="DR_full">Penetração</span></li>
+                <li><span data-i18n="HA">Dri.</span> = <span data-i18n="HA_full">Drible</span></li>
+                <li><span data-i18n="PA">Pa.</span> = <span data-i18n="PA_full">Passe</span></li>
+                <li><span data-i18n="IS">Li.</span> = <span data-i18n="IS_full">Lançamento Interior</span></li>
+                <li><span data-i18n="ID">Di.</span> = <span data-i18n="ID_full">Defesa Interior</span></li>
+                <li><span data-i18n="RB">Res.</span> = <span data-i18n="RB_full">Ressalto</span></li>
+                <li><span data-i18n="SB">Des.</span> = <span data-i18n="SB_full">Desarme de Lançamento</span></li>
               </ul>
             </div>
           </div>
@@ -101,13 +150,21 @@
       </li>
     </ul>
 
-    <!-- Fixed Controls -->
-    <div class="fixed-controls row valign-wrapper">
-      <div class="col s12 m4">
-        <a class="waves-effect waves-light btn green" onclick="addSeason()" data-i18n="addSeason">Add Season</a>
-        <a class="waves-effect waves-light btn red" onclick="removeSeason()" data-i18n="removeSeason">Remove Season</a>
+      <!-- Fixed Controls -->
+    <div class="fixed-controls">
+      <div class="btn-group">
+        <a class="waves-effect waves-light btn green"
+          onclick="addSeason()"
+          data-i18n="addSeason">
+          Add Season
+        </a>
+        <a class="waves-effect waves-light btn red"
+          onclick="removeSeason()"
+          data-i18n="removeSeason">
+          Remove Season
+        </a>
       </div>
-      <div class="col s12 m4 offset-m4 input-field">
+      <div class="input-field coach-select">
         <select id="coachQuality">
           <option value="0.88" data-i18n="cq_minimal">Minimal</option>
           <option value="0.91" data-i18n="cq_basic">Basic</option>
@@ -141,12 +198,12 @@
             <th data-i18n="th_SB">SB</th>
             <th data-i18n="th_height">Height</th>
             <th data-i18n="th_potential">Potential</th>
-            <th data-i18n="th_position">Position</th>
+            <!-- <th data-i18n="th_position">Position</th> -->
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><input id="playerName" type="text" value="Name"></td>
+            <td><input id="playerName" type="text" value="Carlos"></td>
             <td><input id="playerAge" type="number" min="18" max="35" value="18" style="max-width:4rem;"></td>
             <td><input id="JS"  type="number" value="7" min="0" max="30"></td>
             <td><input id="JR"  type="number" value="7" min="0" max="30"></td>
@@ -166,7 +223,7 @@
               <select id="potential"></select>
               <label data-i18n="potentialLabel">Potential</label>
             </td>
-            <td><input id="position" type="text" value="PG"></td>
+            <!-- <td><input id="position" type="text" value="PG"></td> -->
           </tr>
         </tbody>
       </table>
@@ -237,6 +294,9 @@
         SB:   "SB",  SB_full:   "Shot Block",
         addSeason:        "Add Season",
         removeSeason:     "Remove Season",
+        SeasonLabel:  "Season",
+        AgeLabel:     "Age",
+        WeekLabel:    "Week",
         cq_minimal:       "Minimal",
         cq_basic:         "Basic",
         cq_competent:     "Competent",
@@ -257,14 +317,16 @@
         th_position:"Position",
         statsAfterHeader:"Player Stats After Training",
         exportButton:"Export Training Plan (.xlsx)",
-        applyButton: "Apply"
+        applyButton: "Apply",
+        applyToAllWeeks: "Apply to all weeks:",
+        
       },
       pt: {
         app_title: "Simulador de Treino de Basquetebol",
         instructionsHeader: "Instruções e Tradução",
         instructionsTitle:  "Instruções:",
-        instr1:             "Preencha cada nível de habilidade do jogador.",
-        instr2:             "Clique em “Add Season” para adicionar uma temporada de 14 semanas.",
+        instr1:             "Basta preencher cada nível de habilidade do jogador.",
+        instr2:             "Clique em “Adicionar Temporada” para adicionar uma temporada de 14 semanas.",
         instr3:             "Selecione um tipo de treino para cada semana.",
         translationTitle:   "Tradução:",
         JS_full:   "Lançamento",
@@ -279,6 +341,9 @@
         SB_full:   "Desarme de Lançamento",
         addSeason:        "Adicionar Temporada",
         removeSeason:     "Remover Temporada",
+        SeasonLabel:  "Temporada",
+        AgeLabel:     "Idade",
+        WeekLabel:    "Semana",
         cq_minimal:       "Mínimo",
         cq_basic:         "Básico",
         cq_competent:     "Competente",
@@ -287,19 +352,21 @@
         cq_exceptional:   "Excecional",
         cq_worldclass:    "Classe Mundial",
         coachQualityLabel:"Qualidade do Treinador",
-        playerInputHeader:"Entrada do Jogador",
+        playerInputHeader:"Dados do Jogador",
         th_name:   "Nome", th_age:   "Idade",
-        th_JS:     "JS",   th_JR:   "JR",
-        th_OD:     "OD",   th_HA:   "HA",
-        th_DR:     "DR",   th_PA:   "PA",
-        th_IS:     "IS",   th_ID:   "ID",
-        th_RB:     "RB",   th_SB:   "SB",
+        th_JS:     "Lan.", th_JR:   "Dist.",
+        th_OD:     "DE",   th_HA:   "Dri.",
+        th_DR:     "Pen.", th_PA:   "Pa.",
+        th_IS:     "Li.",  th_ID:   "Di.",
+        th_RB:     "Res.", th_SB:   "Des.",
         th_height:"Altura", heightLabel:"Altura",
         th_potential:"Potencial", potentialLabel:"Potencial",
         th_position:"Posição",
         statsAfterHeader:"Estatísticas Após Treino",
         exportButton:"Exportar Plano (.xlsx)",
-        applyButton: "Aplicar Treino"
+        applyButton: "Aplicar Treino",
+        applyToAllWeeks: "Aplicar para todas as semanas",
+        
       }
     };
 

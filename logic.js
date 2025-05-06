@@ -3,7 +3,8 @@
 // ——————————————————————————
 // 1) Core data & tables
 // ——————————————————————————
-
+// default
+window.currentLang = localStorage.getItem('lang') || 'en';
 
 const baseStats = ['JS','JR','OD','HA','DR','PA','IS','ID','RB','SB'];
 
@@ -51,28 +52,28 @@ const elasticEffects = {
 };
 
 const heightMultipliers = {
-  "175cm": { JS:1,   JR:1.5,  OD:1.5,  HA:1, DR:0.95,   PA:1,   IS:0.5,  ID:0.5,  RB:0.5,  SB:0.5 },
-  "178cm": { JS:1,   JR:1.45, OD:1.45, HA:1, DR:0.95,   PA:1,   IS:0.55, ID:0.55, RB:0.55, SB:0.55 },
-  "180cm": { JS:1,   JR:1.4,  OD:1.4,  HA:1, DR:0.95,   PA:1,   IS:0.6,  ID:0.6,  RB:0.6,  SB:0.6 },
-  "183cm": { JS:1,   JR:1.35, OD:1.35, HA:1, DR:0.95,   PA:1,   IS:0.65, ID:0.65, RB:0.65, SB:0.65 },
-  "185cm": { JS:1,   JR:1.3,  OD:1.3,  HA:1, DR:0.95,   PA:1,   IS:0.7,  ID:0.7,  RB:0.7,  SB:0.7 },
-  "188cm": { JS:1,   JR:1.25, OD:1.25, HA:1, DR:0.95,   PA:1,   IS:0.75, ID:0.75, RB:0.75, SB:0.75 },
-  "190cm": { JS:1,   JR:1.2,  OD:1.2,  HA:1, DR:0.95,   PA:1,   IS:0.8,  ID:0.8,  RB:0.8,  SB:0.8 },
-  "193cm": { JS:1,   JR:1.15, OD:1.15, HA:1, DR:0.95,   PA:1,   IS:0.85, ID:0.85, RB:0.85, SB:0.85 },
-  "196cm": { JS:1,   JR:1.1,  OD:1.1,  HA:1, DR:0.95,   PA:1,   IS:0.9,  ID:0.9,  RB:0.9,  SB:0.9 },
-  "198cm": { JS:1,   JR:1.05, OD:1.05, HA:1, DR:0.95,   PA:1,   IS:0.95, ID:0.95, RB:0.95, SB:0.95 },
-  "201cm": { JS:1,   JR:1,    OD:1,    HA:1, DR:0.95,   PA:1,   IS:1,    ID:1,    RB:1,    SB:1   },
-  "203cm": { JS:1,   JR:0.95, OD:0.95, HA:1, DR:0.95,   PA:1.05,   IS:1.05, ID:1.05, RB:1.05, SB:1.05 },
-  "206cm": { JS:1,   JR:0.9,  OD:0.9,  HA:1, DR:0.95,   PA:1.1,   IS:1.1,  ID:1.1,  RB:1.1,  SB:1.1 },
-  "208cm": { JS:1,   JR:0.85, OD:0.85, HA:1, DR:0.95,   PA:1.15,   IS:1.15, ID:1.15, RB:1.15, SB:1.15 },
-  "211cm": { JS:1,   JR:0.8,  OD:0.8,  HA:1, DR:0.97,   PA:1.2,   IS:1.2,  ID:1.2,  RB:1.2,  SB:1.2 },
-  "213cm": { JS:1,   JR:0.75, OD:0.75, HA:1, DR:0.97,   PA:1.25,   IS:1.25, ID:1.25, RB:1.25, SB:1.25 },
-  "216cm": { JS:1,   JR:0.7,  OD:0.7,  HA:1, DR:0.97,   PA:1.3,   IS:1.3,  ID:1.3,  RB:1.3,  SB:1.3 },
-  "218cm": { JS:1,   JR:0.65, OD:0.65, HA:1, DR:0.97,   PA:1.35,   IS:1.35, ID:1.35, RB:1.35, SB:1.35 },
-  "221cm": { JS:1,   JR:0.6,  OD:0.6,  HA:1, DR:0.97,   PA:1.4,   IS:1.4,  ID:1.4,  RB:1.4,  SB:1.4 },
-  "224cm": { JS:1,   JR:0.55, OD:0.55, HA:1, DR:0.97,   PA:1.45,   IS:1.45, ID:1.45, RB:1.45, SB:1.45 },
-  "226cm": { JS:1,   JR:0.5,  OD:0.5,  HA:1, DR:0.97,   PA:1.5,   IS:1.5,  ID:1.5,  RB:1.5,  SB:1.5 },
-  "229cm": { JS:1,   JR:0.45, OD:0.45, HA:1, DR:0.97,   PA:1.5,   IS:1.55, ID:1.55, RB:1.55, SB:1.55 }
+  "175cm": { JS:1,   JR:1.5,  OD:1.5,  HA:1, DR:0.95,   PA:1,   IS:0.55,  ID:0.5,  RB:0.5,  SB:0.5 },
+  "178cm": { JS:1,   JR:1.45, OD:1.45, HA:1, DR:0.95,   PA:1,   IS:0.6, ID:0.55, RB:0.55, SB:0.55 },
+  "180cm": { JS:1,   JR:1.4,  OD:1.4,  HA:1, DR:0.95,   PA:1,   IS:0.65,  ID:0.6,  RB:0.6,  SB:0.6 },
+  "183cm": { JS:1,   JR:1.35, OD:1.35, HA:1, DR:0.95,   PA:1,   IS:0.7, ID:0.65, RB:0.65, SB:0.65 },
+  "185cm": { JS:1,   JR:1.3,  OD:1.3,  HA:1, DR:0.95,   PA:1,   IS:0.75,  ID:0.7,  RB:0.7,  SB:0.7 },
+  "188cm": { JS:1,   JR:1.25, OD:1.25, HA:1, DR:0.95,   PA:1,   IS:0.8, ID:0.75, RB:0.75, SB:0.75 },
+  "190cm": { JS:1,   JR:1.2,  OD:1.2,  HA:1, DR:0.95,   PA:1,   IS:0.85,  ID:0.8,  RB:0.8,  SB:0.8 },
+  "193cm": { JS:1,   JR:1.15, OD:1.15, HA:1, DR:0.95,   PA:1,   IS:0.9, ID:0.85, RB:0.85, SB:0.85 },
+  "196cm": { JS:1,   JR:1.1,  OD:1.1,  HA:1, DR:0.95,   PA:1,   IS:0.95,  ID:0.9,  RB:0.9,  SB:0.9 },
+  "198cm": { JS:1,   JR:1.05, OD:1.05, HA:1, DR:0.95,   PA:1,   IS:1, ID:0.95, RB:0.95, SB:0.95 },
+  "201cm": { JS:1,   JR:1,    OD:1,    HA:1, DR:0.95,   PA:1,   IS:1.05,    ID:1,    RB:1,    SB:1   },
+  "203cm": { JS:1,   JR:0.95, OD:0.95, HA:1, DR:0.95,   PA:1.05,   IS:1.1, ID:1.05, RB:1.05, SB:1.05 },
+  "206cm": { JS:1,   JR:0.9,  OD:0.9,  HA:1, DR:0.95,   PA:1.1,   IS:1.15,  ID:1.1,  RB:1.1,  SB:1.1 },
+  "208cm": { JS:1,   JR:0.85, OD:0.85, HA:1, DR:0.95,   PA:1.15,   IS:1.2, ID:1.15, RB:1.15, SB:1.15 },
+  "211cm": { JS:1,   JR:0.8,  OD:0.8,  HA:1, DR:0.97,   PA:1.2,   IS:1.25,  ID:1.2,  RB:1.2,  SB:1.2 },
+  "213cm": { JS:1,   JR:0.75, OD:0.75, HA:1, DR:0.97,   PA:1.25,   IS:1.3, ID:1.25, RB:1.25, SB:1.25 },
+  "216cm": { JS:1,   JR:0.7,  OD:0.7,  HA:1, DR:0.97,   PA:1.3,   IS:1.35,  ID:1.3,  RB:1.3,  SB:1.3 },
+  "218cm": { JS:1,   JR:0.65, OD:0.65, HA:1, DR:0.97,   PA:1.35,   IS:1.4, ID:1.35, RB:1.35, SB:1.35 },
+  "221cm": { JS:1,   JR:0.6,  OD:0.6,  HA:1, DR:0.97,   PA:1.4,   IS:1.45,  ID:1.4,  RB:1.4,  SB:1.4 },
+  "224cm": { JS:1,   JR:0.55, OD:0.55, HA:1, DR:0.97,   PA:1.45,   IS:1.5, ID:1.45, RB:1.45, SB:1.45 },
+  "226cm": { JS:1,   JR:0.5,  OD:0.5,  HA:1, DR:0.97,   PA:1.5,   IS:1.55,  ID:1.5,  RB:1.5,  SB:1.5 },
+  "229cm": { JS:1,   JR:0.45, OD:0.45, HA:1, DR:0.97,   PA:1.5,   IS:1.6, ID:1.55, RB:1.55, SB:1.55 }
 };
 
 
@@ -94,6 +95,7 @@ window.translations = {
     Name:        "Name",
     Height:      "Height",
     Age:         "Age",
+    applyToAllWeeks: "Apply to all weeks:",
     // baseStats abbreviations will be left as-is, or add entries here to translate them:
     JS: "JS", JR: "JR", OD: "OD", HA: "HA", DR: "DR",
     PA: "PA", IS: "IS", ID: "ID", RB: "RB", SB: "SB"
@@ -106,14 +108,89 @@ window.translations = {
     Name:        "Nome",
     Height:      "Altura",
     Age:         "Idade",
-    JS: "JS", JR: "JR", OD: "OD", HA: "HA", DR: "DR",
-    PA: "PA", IS: "IS", ID: "ID", RB: "RB", SB: "SB"
+    applyToAllWeeks: "Aplicar à temporada:",
+    JS: "Lan.", JR: "Dist.", OD: "Def. Ext.", HA: "Dri.", DR: "Pen.",
+    PA: "Passe.", IS: "Lanç. Int.", ID: "Def. Int.", RB: "Ress.", SB: "Des."
   }
 };
+
+Object.assign(window.translations.en, {
+  "JS (PG/SG)":      "JS (PG/SG)",
+  "JS (SF/PF)":      "JS (SF/PF)",
+  "JS (SG/SF)":      "JS (SG/SF)",
+  "JS (team)":       "JS (team)",
+  "JR (SG)":         "JR (SG)",
+  "JR (PG)":         "JR (PG)",
+  "JR (SG/SF)":      "JR (SG/SF)",
+  "JR (team)":       "JR (team)",
+  "OD (PG)":         "OD (PG)",
+  "OD (PG/SG)":      "OD (PG/SG)",
+  "OD(PG/SG/SF)":    "OD (PG/SG/SF)",
+  "HA (PG)":         "HA (PG)",
+  "HA (PG/SG)":      "HA (PG/SG)",
+  "HA (PG/SG/SF)":   "HA (PG/SG/SF)",
+  "1v1 (PG/SG)":     "1v1 (PG/SG)",
+  "1v1 (SF/PF)":     "1v1 (SF/PF)",
+  "1v1 (team)":      "1v1 (team)",
+  "PA (PG)":         "PA (PG)",
+  "PA (PG/SG)":      "PA (PG/SG)",
+  "PA (team)":       "PA (team)",
+  "IS (C)":          "IS (C)",
+  "IS (PF/C)":       "IS (PF/C)",
+  "IS (SF/PF/C)":    "IS (SF/PF/C)",
+  "ID (C)":          "ID (C)",
+  "ID (PF/C)":       "ID (PF/C)",
+  "ID (SF/PF/C)":    "ID (SF/PF/C)",
+  "RB (PF/C)":       "RB (PF/C)",
+  "RB (team)":       "RB (team)",
+  "SB (C)":          "SB (C)",
+  "SB (PF/C)":       "SB (PF/C)",
+  "SB (team)":       "SB (team)",
+  
+});
+
+Object.assign(window.translations.pt, {
+  "JS (PG/SG)":      "Lançamento (BP/BL)",
+  "JS (SF/PF)":      "Lançamento (E/EP)",
+  "JS (SG/SF)":      "Lançamento (BL/E)",
+  "JS (team)":       "Lançamento (equipa)",
+  "JR (SG)":         "Distância (BL)",
+  "JR (PG)":         "Distância (BP)",
+  "JR (SG/SF)":      "Distância (BL/E)",
+  "JR (team)":       "Distância (equipa)",
+  "OD (PG)":         "Defesa Ext. (BP)",
+  "OD (PG/SG)":      "Defesa Ext. (BP/BL)",
+  "OD(PG/SG/SF)":    "Defesa Ext. (BP/BL/E)",
+  "HA (PG)":         "Drible (BP)",
+  "HA (PG/SG)":      "Drible (BP/BL)",
+  "HA (PG/SG/SF)":   "Drible (BP/BL/E)",
+  "1v1 (PG/SG)":     "1v1 (BP/BL)",
+  "1v1 (SF/PF)":     "1v1 (E/EP)",
+  "1v1 (team)":      "1v1 (equipa)",
+  "PA (PG)":         "Passe (BP)",
+  "PA (PG/SG)":      "Passe (BP/BL)",
+  "PA (team)":       "Passe (equipa)",
+  "IS (C)":          "Lançamento Int. (P)",
+  "IS (PF/C)":       "Lançamento Int. (EP/P)",
+  "IS (SF/PF/C)":    "Lançamento Int. (E/EP/P)",
+  "ID (C)":          "Defesa Int. (P)",
+  "ID (PF/C)":       "Defesa Int. (EP/P)",
+  "ID (SF/PF/C)":    "Defesa Int. (E/EP/P)",
+  "RB (PF/C)":       "Ressaltos (EP/P)",
+  "RB (team)":       "Ressaltos (equipa)",
+  "SB (C)":          "Desarme (P)",
+  "SB (PF/C)":       "Desarme (EP/P)",
+  "SB (team)":       "Desarme (equipa)",
+  "SeasonLabel":  "Temporada",
+  "AgeLabel":     "Idade",
+  "WeekLabel":    "Semana",
+});
 
   
 
 function simulateTraining() {
+
+  
   const coachCoefficient = parseFloat(document.getElementById("coachQuality").value);
   const playerStats = {};
   baseStats.forEach(stat => {
@@ -191,30 +268,57 @@ function addSeason() {
   div.id = `season${seasonCount}`;
   div.classList.add("season-card");
 
-  const opts = Object.keys(trainingEffects).map(o => `<option>${o}</option>`).join("");
-  const weekOpts = `<option value="">-- No Training --</option>${opts}`;
-  const applyOpts = `<option value="">-- Choose Training Type --</option>${opts}`;
+  // grab current lang & its dictionary
+  const lang = localStorage.getItem('lang') || 'en';
+  const t    = window.translations[lang];
+
+  // build options list with translated labels
+  const opts = Object.keys(trainingEffects)
+    .map(key => {
+      const label = window.translations[lang][key] || key;
+      return `<option value="${key}">${label}</option>`;
+    })
+    .join("");
+  const weekOpts  = `<option value="">-- ${t.TrainingType} --</option>${opts}`;
+  const applyOpts = `<option value="">-- ${t.TrainingType} --</option>${opts}`;
 
   div.innerHTML = `
-    <h5>Season ${seasonCount}</h5>
+    <h5>${t.SeasonLabel} ${seasonCount}</h5>
     <div class="input-field">
-      <span>Age:</span>
-      <input type="number" id="seasonAge${seasonCount}" class="season-age-input"
+      <span>${t.AgeLabel}:</span>
+      <input
+        type="number"
+        id="seasonAge${seasonCount}"
+        class="season-age-input"
         value="${baseAge + (seasonCount - 1)}">
     </div>
     <div class="input-field">
-      <span>Apply to all weeks:</span>
-      <select id="seasonApplyAll${seasonCount}" class="apply-all-select">${applyOpts}</select>
-      <button class="btn green" data-i18n="applyButton" onclick="applyTrainingToSeason(${seasonCount})">Apply</button>
+      <span>${t.applyToAllWeeks}</span>
+      <select id="seasonApplyAll${seasonCount}" class="apply-all-select">
+        ${applyOpts}
+      </select>
+      <button
+        class="btn green"
+        data-i18n="applyButton"
+        onclick="applyTrainingToSeason(${seasonCount})">
+        ${t.applyButton}
+      </button>
     </div>
     <table class="highlight">
-      <thead><tr><th>Week</th><th>Training Type</th></tr></thead>
+      <thead>
+        <tr>
+          <th>${t.WeekLabel}</th>
+          <th>${t.TrainingType}</th>
+        </tr>
+      </thead>
       <tbody id="seasonBody${seasonCount}">
         ${Array.from({ length: 14 }, (_, i) => `
           <tr>
-            <td>Week ${i+1}</td>
+            <td>${t.WeekLabel} ${i + 1}</td>
             <td>
-              <select class="training-select">${weekOpts}</select>
+              <select class="training-select">
+                ${weekOpts}
+              </select>
             </td>
           </tr>
         `).join("")}
@@ -223,20 +327,23 @@ function addSeason() {
   `;
 
   container.appendChild(div);
-  M.FormSelect.init(div.querySelectorAll("select"));
-  
-  div.querySelectorAll(".training-select").forEach(sel => {
-    sel.addEventListener("change", simulateTraining);
-  });
-  
-  // Add change listener to age input
-  const ageInput = div.querySelector(`#seasonAge${seasonCount}`);
-  if (ageInput) {
-    ageInput.addEventListener("change", simulateTraining);
-  }
 
-  setLanguage(localStorage.getItem('lang') || 'en');
+  // re-initialize all selects and listeners
+  M.FormSelect.init(div.querySelectorAll("select"));
+  div.querySelectorAll(".training-select")
+     .forEach(sel => sel.addEventListener("change", simulateTraining));
+  const ageInput = div.querySelector(`#seasonAge${seasonCount}`);
+  if (ageInput) ageInput.addEventListener("change", simulateTraining);
+
+  ageInput.addEventListener("change", () => {
+         document.getElementById("playerAge").value = ageInput.value;
+          simulateTraining();
+        });
+
+  // translate newly inserted nodes
+  setLanguage(lang);
 }
+
 
 function removeSeason() {
   if (seasonCount === 0) return;
@@ -271,45 +378,82 @@ function populateStaticDropdowns() {
   }, 0);
 }
 
- window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", () => {
+  // 0) Collapsible panels (if you have any)
+  M.Collapsible.init(document.querySelectorAll('.collapsible'));
+
+  // 1) Populate height & potential dropdowns
   populateStaticDropdowns();
-  baseStats.forEach(st => {
-    const el = document.getElementById(st);
-    if (el) el.value = 7;
+
+  // 2) Initialize ALL selects (coachQuality, height, potential, any season selects later)
+  M.FormSelect.init(document.querySelectorAll('select'));
+
+  // 3) Base‐stat inputs: JS, JR, … SB
+  baseStats.forEach(stat => {
+    const el = document.getElementById(stat);
+    if (el) el.addEventListener("input", simulateTraining);
   });
-  document.getElementById("playerName").value = "Carlos";
+
+  // 4) Player name
+  const nameEl = document.getElementById("playerName");
+  if (nameEl) nameEl.addEventListener("input", simulateTraining);
+
+  // 5) Player age → mirror into all season‐ages
+  const ageEl = document.getElementById("playerAge");
+  if (ageEl) {
+    ageEl.addEventListener("change", () => {
+      const v = ageEl.value;
+      document.querySelectorAll(".season-age-input")
+              .forEach(el => el.value = v);
+      simulateTraining();
+    });
+  }  // ← make sure this brace is here!
+
+  // 6) Height & Potential
+  const heightEl = document.getElementById("height");
+  if (heightEl) heightEl.addEventListener("change", simulateTraining);
+  const potEl = document.getElementById("potential");
+  if (potEl) potEl.addEventListener("change", simulateTraining);
+
+  // 7) Coach quality
   const cq = document.getElementById("coachQuality");
-  if (cq) {
-    M.FormSelect.init([cq]);
-    cq.addEventListener("change", simulateTraining);
-  }
+  if (cq) cq.addEventListener("change", simulateTraining);
+
+  // 8) Kick off initial simulation
   simulateTraining();
-});
+});  // ← make sure this closes the DOMContentLoaded
+
+
 
 function exportTrainingPlan() {
-  if (seasonCount === 0) {
-    alert(translations[localStorage.getItem('lang')||'en'].TrainingType + 
-          " – " +
-          (translations[localStorage.getItem('lang')||'en'].Week) + 
-          ": add at least one season."); 
-    return;
-  }
-
   const lang = localStorage.getItem('lang') || 'en';
   const t    = translations[lang];
 
-  const coachSelect     = document.getElementById("coachQuality");
-  const coachLevelLabel = coachSelect.options[coachSelect.selectedIndex].text;
-  const coachCoefficient= parseFloat(coachSelect.value);
-  const height          = document.getElementById("height").value;
-  const playerName      = document.getElementById("playerName").value;
+  if (seasonCount === 0) {
+    alert(
+      `${t.TrainingType} – ${t.Week}: ` +
+      (lang === 'pt'
+        ? "pelo menos uma semana deve ter treino"
+        : "at least one week must have training")
+    );
+    return;
+  }
 
-  // Sheet 1: Training Plan
-  const seasonPlan = [[
-    t.Season, t.Week, t.TrainingType, t.CoachLevel, t.Name
-  ]];
+  // Re-run the sim so playerStats reflect the latest inputs
+  simulateTraining();
+
+  // Gather common info
+  const coachSelect      = document.getElementById("coachQuality");
+  const coachLevelLabel  = coachSelect.options[coachSelect.selectedIndex].text;
+  const coachCoefficient = parseFloat(coachSelect.value);
+  const height           = document.getElementById("height").value;
+  const playerName       = document.getElementById("playerName").value;
+
+  // ——— Sheet 1: Training Plan ———
+  const seasonPlan = [
+    [ t.Season, t.Week, t.TrainingType, t.CoachLevel, t.Name ]
+  ];
   const trainingData = [];
-
   for (let s = 1; s <= seasonCount; s++) {
     const age     = parseInt(document.getElementById(`seasonAge${s}`).value, 10);
     const selects = document.querySelectorAll(`#seasonBody${s} .training-select`);
@@ -318,60 +462,66 @@ function exportTrainingPlan() {
       if (!training) return;
       seasonPlan.push([
         `${t.Season} ${s}`,
-        `${t.Week} ${i+1}`,
-        training,
+        `${t.Week} ${i + 1}`,
+        window.translations[lang][training] || training,
         coachLevelLabel,
         playerName
       ]);
-      trainingData.push({ season: s, week: i+1, training, age });
+      trainingData.push({ season: s, week: i + 1, training, age });
     });
   }
 
-  if (trainingData.length === 0) {
-    alert(t.TrainingType + " – " + t.Week + ": " + 
-          (lang === 'pt' 
-            ? "pelo menos uma semana deve ter treino" 
-            : "at least one week must have training")
-    );
-    return;
-  }
-
-  // Sheet 2: Stat Progress
+  // ——— Sheet 2: Stat Progress by Week ———
   const weeklyStats = [[
-    t.Season, t.Week, t.Name, t.Height, t.Age, 
+    t.Season, t.Week, t.Name, t.Height, t.Age,
     ...baseStats.map(st => t[st] || st)
   ]];
-  const heightMap = heightMultipliers[height] || {};
+
+  // pull starting stats from inputs
   const playerStats = {};
   baseStats.forEach(st => {
     playerStats[st] = parseFloat(document.getElementById(st).value) || 0;
   });
+  const heightMap = heightMultipliers[height] || {};
 
   trainingData.forEach(({ season, week, training, age }) => {
     const ageCoef = getAgeCoefficient(age);
     const effect  = trainingEffects[training];
     if (!effect) return;
 
-    const gains = {};
-    for (let st in effect) {
-      gains[st] = effect[st] * ageCoef * coachCoefficient;
+    // 1) compute decay‐adjusted base gains
+    const relevant = Object.keys(effect);
+    const flatAvg  = relevant.reduce((sum, st) => sum + playerStats[st], 0) / relevant.length;
+    const gains    = {};
+    for (let st of relevant) {
+      const baseGain    = effect[st] * ageCoef * coachCoefficient;
+      const decayFactor = Math.pow(0.95, playerStats[st] - flatAvg);
+      gains[st] = baseGain * decayFactor;
     }
+
+    // 2) elastic interactions
     for (let st in gains) {
       for (let key in elasticEffects) {
         const [b,tgt] = key.split("->");
-        if (b===st && playerStats[tgt]>playerStats[b]) {
-          const diff = playerStats[tgt]-playerStats[b];
+        if (b===st && playerStats[tgt] > playerStats[b]) {
+          const diff = playerStats[tgt] - playerStats[b];
           gains[b] += gains[b] * (diff * elasticEffects[key]);
         }
       }
     }
+
+    // 3) height multiplier
     for (let st in gains) {
-      gains[st] *= (heightMap[st]||1);
+      gains[st] *= (heightMap[st] || 1);
     }
+
+    // 4) penalty if stat ≥16
     for (let st in gains) {
+      if (playerStats[st] >= 16) gains[st] *= 0.7;
       playerStats[st] += gains[st];
     }
 
+    // record this week
     weeklyStats.push([
       `${t.Season} ${season}`,
       `${t.Week} ${week}`,
@@ -382,43 +532,55 @@ function exportTrainingPlan() {
     ]);
   });
 
-  // Create workbook
+  // ——— Build & style the workbook ———
   const wb  = XLSX.utils.book_new();
   const ws1 = XLSX.utils.aoa_to_sheet(seasonPlan);
   const ws2 = XLSX.utils.aoa_to_sheet(weeklyStats);
 
-  // Freeze top row
+  // freeze header
   ws1['!freeze'] = { xSplit:0, ySplit:1 };
   ws2['!freeze'] = { xSplit:0, ySplit:1 };
 
-  // Format both sheets
   [ws1, ws2].forEach(ws => {
     const range = XLSX.utils.decode_range(ws["!ref"]);
-    // Bold & center headers
+    // bold + center headers
     for (let C = range.s.c; C <= range.e.c; ++C) {
       const hdr = ws[XLSX.utils.encode_cell({r:0,c:C})];
       if (hdr) hdr.s = {
-        font: { bold:true },
+        font:      { bold:true },
         alignment: { horizontal:"center", vertical:"center" }
       };
     }
-    // Auto‐width & center data
+    // auto‐width + center data
     const cols = [];
     for (let C = range.s.c; C <= range.e.c; ++C) {
-      let max = 10;
+      let mx = 10;
       for (let R = range.s.r; R <= range.e.r; ++R) {
         const cell = ws[XLSX.utils.encode_cell({r:R,c:C})];
-        if (cell && cell.v) {
-          max = Math.max(max, cell.v.toString().length);
-          if (R>0) cell.s = { alignment:{horizontal:"center",vertical:"center"} };
+        if (cell && cell.v != null) {
+          mx = Math.max(mx, cell.v.toString().length);
+          if (R>0) cell.s = { alignment:{ horizontal:"center", vertical:"center" }};
         }
       }
-      cols.push({ wch: max+2 });
+      cols.push({ wch: mx + 2 });
     }
     ws["!cols"] = cols;
   });
 
-  XLSX.utils.book_append_sheet(wb, ws1, lang==="pt"?"Plano de Treino":"Training Plan");
-  XLSX.utils.book_append_sheet(wb, ws2, lang==="pt"?"Progresso de Stats":"Stat Progress");
+  // append sheets with localized names
+  XLSX.utils.book_append_sheet(
+    wb, ws1,
+    lang === 'pt' ? "Plano de Treino" : "Training Plan"
+  );
+  XLSX.utils.book_append_sheet(
+    wb, ws2,
+    lang === 'pt' ? "Progresso Semanal" : "Weekly Progress"
+  );
+
+  // download
   XLSX.writeFile(wb, `Training_Plan_${lang}.xlsx`);
 }
+
+
+
+
