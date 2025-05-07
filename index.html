@@ -385,21 +385,33 @@ select#coachQuality {
       }
     };
 
-   // 1) helper to initialize all selects (desktop + mobile friendly)
-  function initAllSelects() {
-    document.querySelectorAll('select').forEach(el => {
-      M.FormSelect.init(el, {
-        dropdownOptions: {
-          coverTrigger: false,
-          constrainWidth: false,
-          closeOnClick: true,
-          container: document.body
+    function initSelects() {
+    // 1) On mobile: tear down any Materialize wrappers
+    document.querySelectorAll('.select-wrapper').forEach(wrapper => {
+      if (window.innerWidth <= 600) {
+        const sel = wrapper.querySelector('select');
+        if (sel) wrapper.replaceWith(sel);
+      }
+    });
+
+    // 2) On desktop: initialize any plain <select> not already wrapped
+    if (window.innerWidth > 600) {
+      document.querySelectorAll('select').forEach(sel => {
+        // skip ones already enhanced
+        if (!sel.parentElement.classList.contains('select-wrapper')) {
+          M.FormSelect.init(sel, {
+            dropdownOptions: {
+              coverTrigger:   false,
+              constrainWidth: false,
+              closeOnClick:   true,
+              container:      document.body
+            }
+          });
         }
       });
-    });
+    }
   }
 
-  // 2) update translate + re‐init to use our new helper
   function setLanguage(lang) {
     document.title = i18n[lang].app_title;
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -408,16 +420,20 @@ select#coachQuality {
         el.textContent = i18n[lang][key];
       }
     });
-    // re-init all selects (desktop + mobile)
-    initAllSelects();
+    initSelects();
     localStorage.setItem('lang', lang);
   }
 
-  // 3) on DOM ready, wire up everything
   document.addEventListener('DOMContentLoaded', () => {
+    // init any collapsibles
     M.Collapsible.init(document.querySelectorAll('.collapsible'));
-    initAllSelects();
+    // run our select logic first
+    initSelects();
+    // apply saved language (which also re‐runs initSelects)
     setLanguage(localStorage.getItem('lang') || 'en');
+
+    // re‐run on resize/orientation changes
+    window.addEventListener('resize', initSelects);
   });
   </script>
 </body>
