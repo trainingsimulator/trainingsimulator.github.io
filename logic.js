@@ -43,7 +43,7 @@ const trainingEffects = {
 };
 
 const elasticEffects = {
-  'JS->DR': 0.0211, 'JR->OD': 0.0371, 'OD->HA': 0.0332,
+  'JS->DR': 0.0211, 'JR->OD': 0.0371, 'OD->HA': 0.0432,
   'PA->HA': 0.04, 'DR->JS': 0.0296, 'DR->PA': 0.0129,
   'HA->OD': 0.0116, 'HA->PA': 0.0103, 'IS->JS': 0.0125,
   'IS->ID': 0.0289, 'IS->RB': 0.0257, 'ID->IS': 0.0153,
