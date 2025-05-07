@@ -23,16 +23,16 @@ const trainingEffects = {
   "HA (PG)": { OD:0.1, DR:0.5, HA:0.4 },
   "HA (PG/SG)": { OD:0.075, DR:0.375, HA:0.03 },
   "HA (PG/SG/SF)": { OD:0.04, DR:0.2, HA:0.16 },
-  "1v1 (PG/SG)": { JS:0.4, DR:0.5, HA:0.4 },
-  "1v1 (SF/PF)": { JS:0.2, DR:0.5, HA:0.4, IS:0.2 },
+  "1v1 (PG/SG)": { JS:0.4, DR:0.45, HA:0.4 },
+  "1v1 (SF/PF)": { JS:0.2, DR:0.45, HA:0.4, IS:0.2 },
   "1v1 (team)": { JS:0.088, DR:0.176, HA:0.22, IS:0.088 },
   "PA (PG)": { DR:0.16, HA:0.16, PA:0.6 },
   "PA (PG/SG)": { DR:0.12, HA:0.12, PA:0.45 },
   "PA (team)": { DR:0.04, HA:0.04, PA:0.15 },
-  "IS (C)": { JS:0.1, IS:0.5, ID:0.05 },
+  "IS (C)": { JS:0.1, IS:0.6, ID:0.1 },
   "IS (PF/C)": { JS:0.075, IS:0.375, ID:0.0375 },
   "IS (SF/PF/C)": { JS:0.04, IS:0.2, ID:0.02 },
-  "ID (C)": { IS:0.05, ID:0.5, SB:0.1 },
+  "ID (C)": { IS:0.1, ID:0.6, SB:0.1 },
   "ID (PF/C)": { IS:0.0375, ID:0.375, SB:0.075 },
   "ID (SF/PF/C)": { IS:0.02, ID:0.2, SB:0.04 },
   "RB (PF/C)": { IS:0.05, ID:0.05, RB:0.5 },
@@ -46,7 +46,7 @@ const elasticEffects = {
   'JS->DR': 0.0211, 'JR->OD': 0.0371, 'OD->HA': 0.0352,
   'PA->HA': 0.04, 'DR->JS': 0.0296, 'DR->PA': 0.0129,
   'HA->OD': 0.0116, 'HA->PA': 0.0103, 'IS->JS': 0.0125,
-  'IS->ID': 0.0289, 'IS->RB': 0.0257, 'ID->IS': 0.0153,
+  'IS->ID': 0.0359, 'IS->RB': 0.0257, 'ID->IS': 0.353,
   'RB->ID': 0.0371, 'SB->ID': 0.0197, 
   'OD->ID': 0.0355
 };
@@ -79,9 +79,9 @@ const heightMultipliers = {
 
 function getAgeCoefficient(age) {
   const table = {
-    18:1.00, 19:0.95, 20:0.88, 21:0.78, 22:0.7, 23:0.6, 24:0.51,
-    25:0.42, 26:0.35, 27:0.27, 28:0.21, 29:0.16, 30:0.11,
-    31:0.07, 32:0.05, 33:0.03, 34:0.02, 35:0.01
+    18:1.00, 19:0.95, 20:0.88, 21:0.8, 22:0.7, 23:0.65, 24:0.61,
+    25:0.52, 26:0.43, 27:0.37, 28:0.28, 29:0.19, 30:0.13,
+    31:0.1, 32:0.05, 33:0.03, 34:0.02, 35:0.01
   };
   return table[age] || 0;
 }
@@ -219,7 +219,7 @@ function simulateTraining() {
     const gains = {};
     for (let st of relevantStats) {
      const baseGain = effect[st] * ageCoef * coachCoefficient;
-     const decayFactor = Math.pow(0.93, playerStats[st] - flatAverage);
+     const decayFactor = Math.pow(0.935, playerStats[st] - flatAverage);
       gains[st] = baseGain * decayFactor;
       }
 
@@ -520,7 +520,7 @@ function exportTrainingPlan() {
 
     // 4) penalty if stat ≥16
     for (let st in gains) {
-      if (playerStats[st] >= 16) gains[st] *= 0.7;
+      if (playerStats[st] >= 16) gains[st] *= 0.8;
       playerStats[st] += gains[st];
     }
 

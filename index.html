@@ -7,102 +7,109 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet"/>
   <style>
     .fixed-controls {
-      position: sticky;
-      top: 0;
-      background: white;
-      z-index: 1000;
-      padding: 1rem 0;
-      display: flex !important;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .fixed-controls .btn-group a {
-      margin-right: 0.75rem;
-    }
-  
-    .player-card,
-    .season-card {
-      margin-bottom: 2rem;
-      padding: 1rem;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      width: 100%;
-      box-sizing: border-box;
-      overflow-x: ;
-    }
-  
-    table th,
-    table td {
-      padding: 0 1rem;
-    }
-  
-    .season-age-input {
-      max-width: 5rem;
-      margin-right: 1rem;
-      display: inline-block;
-    }
-  
-    input[type="text"],
-    input[type="number"],
-    select {
-      box-shadow: none !important;
-      border-bottom: none !important;
-      background-image: none !important;
-      margin-bottom: 0;
-    }
-  
-    select#coachQuality {
-      background-color: #e3f2fd;
-      border-radius: 4px;
-      padding: 4px 8px;
-    }
-  
-    .training-select {
-      background-color: #e8f5e9;
-      border-radius: 4px;
-      padding: 4px 8px;
-    }
-  
-    .apply-all-select {
-      background-color: #f1f8e9;
-      border-radius: 4px;
-      padding: 4px 8px;
-    }
-  
-    .lang-toggle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-    .lang-toggle img {
-      width: 28px;
-      height: 20px;
-      margin-left: 5px;
-      cursor: pointer;
-    }
-  
-    /* snugly fit two-digit inputs so “10” shows fully */
-    .player-card input[type="number"],
-    .season-card input[type="number"] {
-      width: 2.4rem !important;
-      text-align: center;
-      padding: 0.1rem;
-    }
-  
-    /* force inner tables to size themselves to content, but scroll when needed */
-    .player-card .highlight,
-    .season-card .highlight {
-      overflow-x: auto;
-      overflow-y: visible;
-    }
-    .player-card .highlight table,
-    .season-card .highlight table {
-      display: block;
-      width: max-content;  /* grow to fit all columns */
-      min-width: 100%;     /* never shrink below card width */
-      white-space: nowrap;
-      border-collapse: collapse;
-    }
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1000;
+  padding: 1rem 0;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+.fixed-controls .btn-group a {
+  margin-right: 0.75rem;
+}
+
+.player-card,
+.season-card {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  /* no overflow here so dropdowns can escape the card */
+}
+
+table th,
+table td {
+  padding: 0 1rem;
+}
+
+.season-age-input {
+  max-width: 5rem;
+  margin-right: 1rem;
+  display: inline-block;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  box-shadow: none !important;
+  border-bottom: none !important;
+  background-image: none !important;
+  margin-bottom: 0;
+}
+
+select#coachQuality {
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.training-select {
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.apply-all-select {
+  background-color: #f1f8e9;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.lang-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.lang-toggle img {
+  width: 28px;
+  height: 20px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* snugly fit two-digit inputs so “10” shows fully */
+.player-card input[type="number"],
+.season-card input[type="number"] {
+  width: 2.4rem !important;
+  text-align: center;
+  padding: 0.1rem;
+}
+
+/* make the inner tables horizontally scrollable */
+.player-card .highlight,
+.season-card .highlight {
+  overflow-x: auto;
+  /* allow dropdowns to pop above */
+  overflow-y: visible;
+}
+.player-card .highlight table,
+.season-card .highlight table {
+  display: block;
+  width: max-content;  /* grow to fit all columns */
+  min-width: 100%;     /* never shrink below card width */
+  white-space: nowrap;
+  border-collapse: collapse;
+}
+
+/* make sure the Materialize dropdowns float above everything */
+.dropdown-content {
+  z-index: 2000 !important;
+}
+
   </style>
 </head>
 <!-- Google tag (gtag.js) -->
@@ -280,6 +287,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="logic.js"></script>
   <script>
+    
     const i18n = {
       en: {
         app_title: "Basketball Training Simulator",
@@ -377,24 +385,40 @@
       }
     };
 
-    function setLanguage(lang) {
-      document.title = i18n[lang].app_title;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key] != null) {
-          el.textContent = i18n[lang][key];
+   // 1) helper to initialize all selects (desktop + mobile friendly)
+  function initAllSelects() {
+    document.querySelectorAll('select').forEach(el => {
+      M.FormSelect.init(el, {
+        dropdownOptions: {
+          coverTrigger: false,
+          constrainWidth: false,
+          closeOnClick: true,
+          container: document.body
         }
       });
-      // re-init all selects so new <option> labels take effect
-      M.FormSelect.init(document.querySelectorAll('select'));
-      localStorage.setItem('lang', lang);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      M.Collapsible.init(document.querySelectorAll('.collapsible'));
-      M.FormSelect.init(document.querySelectorAll('select'));
-      setLanguage(localStorage.getItem('lang') || 'en');
     });
+  }
+
+  // 2) update translate + re‐init to use our new helper
+  function setLanguage(lang) {
+    document.title = i18n[lang].app_title;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (i18n[lang][key] != null) {
+        el.textContent = i18n[lang][key];
+      }
+    });
+    // re-init all selects (desktop + mobile)
+    initAllSelects();
+    localStorage.setItem('lang', lang);
+  }
+
+  // 3) on DOM ready, wire up everything
+  document.addEventListener('DOMContentLoaded', () => {
+    M.Collapsible.init(document.querySelectorAll('.collapsible'));
+    initAllSelects();
+    setLanguage(localStorage.getItem('lang') || 'en');
+  });
   </script>
 </body>
 </html>
