@@ -9,8 +9,8 @@ window.currentLang = localStorage.getItem('lang') || 'en';
 const baseStats = ['JS','JR','OD','HA','DR','PA','IS','ID','RB','SB'];
 
 const trainingEffects = {
-  "JS (PG/SG)": { JS:0.6, JR:0.2, DR:0.05, HA:0.05 },
-  "JS (SF/PF)": { JS:0.4, JR:0.15, IS:0.25 },
+  "JS (PG/SG)": { JS:0.52, JR:0.2, DR:0.05, HA:0.05 },
+  "JS (SF/PF)": { JS:0.35, JR:0.15, IS:0.25 },
   "JS (SG/SF)": { JS:0.5, JR:0.1, DR:0.05, HA:0.05 },
   "JS (team)": { JS:0.22, JR:0.04, DR:0.02, HA:0.02 },
   "JR (SG)": { JS:0.2, JR:0.4, DR:0.05, HA:0.05 },
@@ -20,33 +20,33 @@ const trainingEffects = {
   "OD (PG)": { OD:0.5, DR:0.05, HA:0.05, ID:0.1 },
   "OD (PG/SG)": { OD:0.375, DR:0.0375, HA:0.0375, ID:0.075 },
   "OD(PG/SG/SF)": { OD:0.2, DR:0.02, HA:0.02, ID:0.04 },
-  "HA (PG)": { OD:0.1, DR:0.5, HA:0.4 },
-  "HA (PG/SG)": { OD:0.075, DR:0.375, HA:0.03 },
-  "HA (PG/SG/SF)": { OD:0.04, DR:0.2, HA:0.16 },
+  "HA (PG)": { OD:0.15, DR:0.4, HA:0.5 },
+  "HA (PG/SG)": { OD:0.075, DR:0.0375, HA:0.045 },
+  "HA (PG/SG/SF)": { OD:0.04, DR:0.2, HA:0.25 },
   "1v1 (PG/SG)": { JS:0.4, DR:0.45, HA:0.4 },
   "1v1 (SF/PF)": { JS:0.2, DR:0.45, HA:0.4, IS:0.2 },
   "1v1 (team)": { JS:0.088, DR:0.176, HA:0.22, IS:0.088 },
-  "PA (PG)": { DR:0.16, HA:0.16, PA:0.6 },
+  "PA (PG)": { DR:0.16, HA:0.16, PA:0.6  },
   "PA (PG/SG)": { DR:0.12, HA:0.12, PA:0.45 },
   "PA (team)": { DR:0.04, HA:0.04, PA:0.15 },
-  "IS (C)": { JS:0.1, IS:0.6, ID:0.1 },
+  "IS (C)": { JS:0.13, IS:0.5, ID:0.1 },
   "IS (PF/C)": { JS:0.075, IS:0.375, ID:0.0375 },
   "IS (SF/PF/C)": { JS:0.04, IS:0.2, ID:0.02 },
-  "ID (C)": { IS:0.1, ID:0.6, SB:0.1 },
+  "ID (C)": { IS:0.1, ID:0.5, SB:0.1 },
   "ID (PF/C)": { IS:0.0375, ID:0.375, SB:0.075 },
   "ID (SF/PF/C)": { IS:0.02, ID:0.2, SB:0.04 },
   "RB (PF/C)": { IS:0.05, ID:0.05, RB:0.5 },
   "RB (team)": { IS:0.022, ID:0.022, RB:0.22 },
-  "SB (C)": { ID:0.25, RB:0.1, SB:0.5 },
+  "SB (C)": { ID:0.2, RB:0.1, SB:0.5 },
   "SB (PF/C)": { ID:0.15, RB:0.075, SB:0.375 },
   "SB (team)": { ID:0.08, RB:0.04, SB:0.2 }
 };
 
 const elasticEffects = {
   'JS->DR': 0.0211, 'JR->OD': 0.0371, 'OD->HA': 0.0352,
-  'PA->HA': 0.04, 'DR->JS': 0.0296, 'DR->PA': 0.0129,
+  'PA->HA': 0.03, 'DR->JS': 0.0296, 'DR->PA': 0.0129,
   'HA->OD': 0.0116, 'HA->PA': 0.0103, 'IS->JS': 0.0125,
-  'IS->ID': 0.0359, 'IS->RB': 0.0257, 'ID->IS': 0.353,
+  'IS->ID': 0.0159, 'IS->RB': 0.0257, 'ID->IS': 0.153,
   'RB->ID': 0.0371, 'SB->ID': 0.0197, 
   'OD->ID': 0.0355
 };
@@ -219,7 +219,7 @@ function simulateTraining() {
     const gains = {};
     for (let st of relevantStats) {
      const baseGain = effect[st] * ageCoef * coachCoefficient;
-     const decayFactor = Math.pow(0.935, playerStats[st] - flatAverage);
+     const decayFactor = Math.pow(0.965, playerStats[st] - flatAverage);
       gains[st] = baseGain * decayFactor;
       }
 
