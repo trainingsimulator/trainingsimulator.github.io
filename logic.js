@@ -241,7 +241,7 @@ function simulateTraining() {
       
       for (let st in gains) {
         if (playerStats[st] >= 16) {
-          gains[st] *= 0.85;
+          gains[st] *= 0.9;
         }
         playerStats[st] += gains[st];
       }
