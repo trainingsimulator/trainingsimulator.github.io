@@ -241,7 +241,7 @@ function simulateTraining() {
       
       for (let st in gains) {
         if (playerStats[st] >= 16) {
-          gains[st] *= 0.9;
+          gains[st] *= 0.75;
         }
         playerStats[st] += gains[st];
       }
@@ -498,7 +498,7 @@ function exportTrainingPlan() {
     const gains    = {};
     for (let st of relevant) {
       const baseGain    = effect[st] * ageCoef * coachCoefficient;
-      const decayFactor = Math.pow(0.95, playerStats[st] - flatAvg);
+      const decayFactor = Math.pow(0.965, playerStats[st] - flatAvg);
       gains[st] = baseGain * decayFactor;
     }
 
