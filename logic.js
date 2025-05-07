@@ -76,6 +76,10 @@ const heightMultipliers = {
   "229cm": { JS:1,   JR:0.45, OD:0.45, HA:1, DR:0.95,   PA:1.5,   IS:1.55, ID:1.55, RB:1.55, SB:1.55 }
 };
 
+const heightExceptions = {
+  "JS (SF/PF)":  ["JS","IS"],
+};
+
 
 function getAgeCoefficient(age) {
   const table = {
@@ -201,7 +205,10 @@ function simulateTraining() {
   });
   const playerName = document.getElementById("playerName").value;
   const heightMap = heightMultipliers[document.getElementById("height").value] || {};
-
+  const currentHeight = parseInt(
+    document.getElementById("height").value.replace("cm",""),
+    10
+  );
   
 
   for (let s = 1; s <= seasonCount; s++) {
@@ -216,18 +223,31 @@ function simulateTraining() {
       const relevantStats = Object.keys(effect);
       const flatAverage = relevantStats.reduce((sum, st) => sum + playerStats[st], 0) / relevantStats.length;
 
-    const gains = {};
-    for (let st of relevantStats) {
-     const baseGain = effect[st] * ageCoef * coachCoefficient;
-     const decayFactor = Math.pow(0.965, playerStats[st] - flatAverage);
-      gains[st] = baseGain * decayFactor;
-      }
+      const gains = {};
+      for (let st of relevantStats) {
+      const baseGain = effect[st] * ageCoef * coachCoefficient;
+      const decayFactor = Math.pow(0.965, playerStats[st] - flatAverage);
+        gains[st] = baseGain * decayFactor;
+        }
 
-     // 2) height
-     for (let st in gains) {
-       gains[st] *= (heightMap[st]||1);
-  
-   }
+        for (let st in gains) {
+          // 1) default from table or 1
+          let mult = heightMap[st] || 1;
+        
+          // 2) if it's IS and height ≥ 201cm, bump to 1.1
+          if (st === "IS" && currentHeight >= 201) {
+            mult = 1.1;
+          }
+          
+          // 3) your existing exceptions: force 1× if this drill says so
+          const exc = heightExceptions[select.value];
+          if (exc && exc.includes(st)) {
+            mult = 1;
+          }
+        
+          // 4) apply
+          gains[st] *= mult;
+        }
      // 3) elastic
      for (let st in gains) {
       for (let key in elasticEffects) {
@@ -498,7 +518,7 @@ function exportTrainingPlan() {
     const gains    = {};
     for (let st of relevant) {
       const baseGain    = effect[st] * ageCoef * coachCoefficient;
-      const decayFactor = Math.pow(0.95, playerStats[st] - flatAvg);
+      const decayFactor = Math.pow(0.965, playerStats[st] - flatAvg);
       gains[st] = baseGain * decayFactor;
     }
 
