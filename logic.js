@@ -8,6 +8,13 @@ window.currentLang = localStorage.getItem('lang') || 'en';
 
 const baseStats = ['JS','JR','OD','HA','DR','PA','IS','ID','RB','SB'];
 
+let seasonCount = 0;
+
+const heightOptions = ["175cm","178cm","180cm","183cm","185cm","188cm","190cm","193cm","196cm","198cm","201cm","203cm","206cm","208cm","211cm","213cm","216cm","218cm","221cm","224cm","226cm","229cm"];
+
+const potentialOptions = ["Speaker","Reserva","Jogador útil","6º Homem","Titular","Estrela","Super-estrela","Vedeta","Super-vedeta","MVP","Jogador Histórico","Melhor jogador de sempre"];
+
+
 const trainingEffects = {
   "JS (PG/SG)": { JS:0.52, JR:0.2, DR:0.05, HA:0.05 },
   "JS (SF/PF)": { JS:0.35, JR:0.15, IS:0.25 },
@@ -20,11 +27,11 @@ const trainingEffects = {
   "OD (PG)": { OD:0.5, DR:0.05, HA:0.05, ID:0.1 },
   "OD (PG/SG)": { OD:0.375, DR:0.0375, HA:0.0375, ID:0.075 },
   "OD(PG/SG/SF)": { OD:0.2, DR:0.02, HA:0.02, ID:0.04 },
-  "HA (PG)": { OD:0.15, DR:0.4, HA:0.5 },
+  "HA (PG)": { OD:0.1, DR:0.4, HA:0.5 },
   "HA (PG/SG)": { OD:0.075, DR:0.0375, HA:0.045 },
   "HA (PG/SG/SF)": { OD:0.04, DR:0.2, HA:0.25 },
-  "1v1 (PG/SG)": { JS:0.4, DR:0.45, HA:0.4 },
-  "1v1 (SF/PF)": { JS:0.2, DR:0.45, HA:0.4, IS:0.2 },
+  "1v1 (PG/SG)": { JS:0.4, DR:0.45, HA:0.38 },
+  "1v1 (SF/PF)": { JS:0.2, DR:0.45, HA:0.38, IS:0.2 },
   "1v1 (team)": { JS:0.088, DR:0.176, HA:0.22, IS:0.088 },
   "PA (PG)": { DR:0.16, HA:0.16, PA:0.6  },
   "PA (PG/SG)": { DR:0.12, HA:0.12, PA:0.45 },
@@ -77,8 +84,45 @@ const heightMultipliers = {
 };
 
 const heightExceptions = {
-  "JS (SF/PF)":  ["JS","IS"],
+  "JS (SF/PF)":  ["IS"],
 };
+const ratingLabels = {
+  1:  "atrocious", 2:  "pitiful",   3:  "awful",     4:  "inept",
+  5:  "mediocre",   6:  "average",   7:  "respectable",8:  "strong",
+  9:  "proficient", 10: "prominent",11: "prolific",  12: "sensational",
+  13: "tremendous", 14: "wondrous",  15: "marvelous", 16: "prodigious",
+  17: "stupendous", 18: "phenomenal",19: "colossal",  20: "legendary",
+  20: "legendary",  21: "legendary",  22: "legendary",  23: "legendary",
+  24: "legendary",  25: "legendary",  26: "legendary",  27: "legendary",
+  28: "legendary",  29: "legendary"
+
+};
+const ratingColors = {
+  1:  '#000000', // ridículo — black
+  2:  '#003399', // horrível — deep navy blue
+  3:  '#1a40c2', // tenebroso — strong blue
+  4:  '#3366cc', // desajeitado — medium blue
+  5:  '#5a2a9a', // medíocre — muted purple
+  6:  '#a03fd4', // comum — medium purple
+  7:  '#c74ccc', // respeitável — pinkish purple
+  8:  '#e53950', // forte — red
+  9:  '#8b0000',  // dark red
+  10: '#8b0000',  // dark red
+  11: '#b02b26',
+  12: '#d5554c',
+  13: '#fa8072',  // light red
+  14: '#FF8C00',  // dark orange
+  15: '#C9B037',  // golden
+  16: '#DAA520',  // darker golden
+  17: '#9ACD32',  // yellowish green
+  18: '#006400',  // dark green
+  19: '#228B22',  // medium dark green
+  20: '#32CD32',  // light green
+  21: '#32CD32', 22: '#32CD32', 23: '#32CD32',
+  24: '#32CD32', 25: '#32CD32', 26: '#32CD32',
+  27: '#32CD32', 28: '#32CD32', 29: '#32CD32'
+};
+
 
 
 function getAgeCoefficient(age) {
@@ -153,6 +197,37 @@ Object.assign(window.translations.en, {
   "SeasonLabel":  "Season",
   "AgeLabel":     "Age",
   "WeekLabel":    "Week",
+  ratingLabels: {
+    1:  'atrocious',
+    2:  'pitiful',
+    3:  'awful',
+    4:  'inept',
+    5:  'mediocre',
+    6:  'average',
+    7:  'respectable',
+    8:  'strong',
+    9:  'proficient',
+    10: 'prominent',
+    11: 'prolific',
+    12: 'sensational',
+    13: 'tremendous',
+    14: 'wondrous',
+    15: 'marvelous',
+    16: 'prodigious',
+    17: 'stupendous',
+    18: 'phenomenal',
+    19: 'colossal',
+    20: 'legendary',
+    21: 'legendary',
+    22: 'legendary',
+    23: 'legendary',
+    24: 'legendary',
+    25: 'legendary',
+    26: 'legendary',
+    27: 'legendary',
+    28: 'legendary',
+    29: 'legendary',
+  }
   
 });
 
@@ -191,87 +266,198 @@ Object.assign(window.translations.pt, {
   "SeasonLabel":  "Temporada",
   "AgeLabel":     "Idade",
   "WeekLabel":    "Semana",
+  ratingLabels: {
+    1:  'rídiculo',
+    2:  'horrível',
+    3:  'tenebroso',
+    4:  'desajeitado',
+    5:  'medíocre',
+    6:  'comum',
+    7:  'respeitável',
+    8:  'forte',
+    9:  'impressionante',
+    10: 'admirável',
+    11: 'excecional',
+    12: 'sensacional',
+    13: 'extraordinário',
+    14: 'fantástico',
+    15: 'maravilhoso',
+    16: 'incrível',
+    17: 'estupendo',
+    18: 'fenomenal',
+    19: 'colossal',
+    20: 'lendário',
+    21: 'lendário',
+    22: 'lendário',
+    23: 'lendário',
+    24: 'lendário',
+    25: 'lendário',
+    26: 'lendário',
+    27: 'lendário',
+    28: 'lendário',
+    29: 'lendário',
+   
+    
+  }
 });
 
-  
+function renderPlayerOverview(name, age, playerStats, skillPoints) {
+  // sync header
+  document.getElementById("playerNameHeader").textContent = `${name}, ${age}`;
+
+  // each stat
+  const outsideStats = ['JS','JR','OD','HA','DR','PA'];
+  const insideStats  = ['IS','ID','RB','SB'];
+  baseStats.forEach(st => {
+    let v = Math.round(playerStats[st]);
+    v = Math.max(1, Math.min(20, v));
+    const lbl = ratingLabels[v];
+    const col = ratingColors[v];
+    const el  = document.getElementById(`stat${st}`);
+    el.textContent = `${lbl} (${v})`;
+    el.style.color = col;
+  });
+
+  // total skill‐points line
+  document.getElementById("skillPointsTotal").textContent =
+    `${skillPoints.total} (${skillPoints.outside}|${skillPoints.inside})`;
+}
 
 function simulateTraining() {
-
-  
+  // ——————————————————————————
+  // 0) Gather common inputs
+  // ——————————————————————————
   const coachCoefficient = parseFloat(document.getElementById("coachQuality").value);
   const playerStats = {};
   baseStats.forEach(stat => {
     playerStats[stat] = parseFloat(document.getElementById(stat).value) || 0;
   });
-  const playerName = document.getElementById("playerName").value;
-  const heightMap = heightMultipliers[document.getElementById("height").value] || {};
-  const currentHeight = parseInt(
-    document.getElementById("height").value.replace("cm",""),
-    10
-  );
-  
+  const playerName    = document.getElementById("playerName").value;
+  const heightValue   = document.getElementById("height").value;
+  const heightMap     = heightMultipliers[ heightValue ] || {};
+  const currentHeight = parseInt(heightValue.replace("cm",""), 10);
 
+  // ——————————————————————————
+  // 1) Run through each season/week and apply all gains
+  // ——————————————————————————
   for (let s = 1; s <= seasonCount; s++) {
     const selects = document.querySelectorAll(`#seasonBody${s} .training-select`);
-    const age = parseInt(document.getElementById(`seasonAge${s}`).value, 10);
+    const age     = parseInt(document.getElementById(`seasonAge${s}`).value, 10);
     const ageCoef = getAgeCoefficient(age);
 
     selects.forEach(select => {
       const effect = trainingEffects[select.value];
       if (!effect) return;
 
+      // compute base + decay
       const relevantStats = Object.keys(effect);
-      const flatAverage = relevantStats.reduce((sum, st) => sum + playerStats[st], 0) / relevantStats.length;
-
+      const flatAverage   = relevantStats.reduce((sum, st) => sum + playerStats[st], 0) / relevantStats.length;
       const gains = {};
       for (let st of relevantStats) {
-      const baseGain = effect[st] * ageCoef * coachCoefficient;
-      const decayFactor = Math.pow(0.965, playerStats[st] - flatAverage);
+        const baseGain    = effect[st] * ageCoef * coachCoefficient;
+        const decayFactor = Math.pow(0.965, playerStats[st] - flatAverage);
         gains[st] = baseGain * decayFactor;
-        }
+      }
 
-        for (let st in gains) {
-          // 1) default from table or 1
-          let mult = heightMap[st] || 1;
-        
-          // 2) if it's IS and height ≥ 201cm, bump to 1.1
-          if (st === "IS" && currentHeight >= 201) {
-            mult = 1.1;
-          }
-          
-          // 3) your existing exceptions: force 1× if this drill says so
-          const exc = heightExceptions[select.value];
-          if (exc && exc.includes(st)) {
-            mult = 1;
-          }
-        
-          // 4) apply
-          gains[st] *= mult;
-        }
-     // 3) elastic
-     for (let st in gains) {
-      for (let key in elasticEffects) {
-         const [b, t] = key.split('->');
-    if (b===st && playerStats[t] > playerStats[b]) {
-           const diff = playerStats[t] - playerStats[b];
-          gains[b] += gains[b] * (diff * elasticEffects[key]);
-       }
-       }
-     }
-      
+      // height multiplier (with your IS bump)
       for (let st in gains) {
-        if (playerStats[st] >= 16) {
-          gains[st] *= 0.8;
+        let mult = heightMap[st] || 1;
+        if (st === "IS" && currentHeight >= 201) {
+          mult = 1.05;
         }
+        gains[st] *= mult;
+      }
+
+      // elastic interactions
+      for (let st in gains) {
+        for (let key in elasticEffects) {
+          const [b,t] = key.split("->");
+          if (b === st && playerStats[t] > playerStats[b]) {
+            const diff = playerStats[t] - playerStats[b];
+            gains[b] += gains[b] * (diff * elasticEffects[key]);
+          }
+        }
+      }
+
+      // penalty & apply
+      for (let st in gains) {
+        if (playerStats[st] >= 16) gains[st] *= 0.8;
         playerStats[st] += gains[st];
       }
     });
   }
 
+  // ——————————————————————————
+  // 2) Update the “after training” table
+  // ——————————————————————————
   const resultRow = document.getElementById("resultRow");
   resultRow.innerHTML = `<td>${playerName}</td>` +
     baseStats.map(st => `<td>${playerStats[st].toFixed(2)}</td>`).join("");
+
+  // ——————————————————————————
+  // 3) Sync into your Player‐Overview panel
+  // ——————————————————————————
+
+  // 3a) grab localized rating‐labels
+  const lang   = window.currentLang || localStorage.getItem('lang') || 'en';
+  const labels = window.translations[lang].ratingLabels;
+  const colors = ratingColors;
+
+  // 3b) per‐stat display (rounded up + label)
+  baseStats.forEach(st => {
+    const el = document.getElementById(`stat${st}`);
+    if (!el) return;
+
+    const raw     = playerStats[st];
+    const rounded = Math.min(29, Math.max(1, Math.ceil(raw)));
+    const label   = labels[rounded] || '';
+    const color   = colors[rounded] || "#000";
+    el.innerHTML = `<span style="font-weight: 500; color: ${color};">${label}</span> (${rounded})`;
+  });
+
+  // 3c) recompute outside / inside / total skill points
+  const outsideKeys = ['JS','JR','OD','HA','DR','PA'];
+  const insideKeys  = ['IS','ID','RB','SB'];
+  const outsideSum  = outsideKeys.reduce((sum,k) => sum + playerStats[k], 0);
+  const insideSum   = insideKeys .reduce((sum,k) => sum + playerStats[k], 0);
+  const outsideCeil = Math.ceil(outsideSum);
+  const insideCeil  = Math.ceil(insideSum);
+  const totalCeil   = outsideCeil + insideCeil;
+
+  const totalEl = document.getElementById('skillPointsTotal');
+  if (totalEl) {
+    totalEl.textContent = `${totalCeil} (${outsideCeil}|${insideCeil})`;
+  }
+
+  // 3d) name sync
+  const nameHeader = document.getElementById('playerNameHeader');
+  if (nameHeader) nameHeader.textContent = playerName;
+
+  // 3e) age sync from last season (or base input if no seasons)
+  let finalAge = parseInt(document.getElementById('playerAge').value, 10);
+  if (seasonCount > 0) {
+    const lastAgeEl = document.getElementById(`seasonAge${seasonCount}`);
+    if (lastAgeEl) finalAge = parseInt(lastAgeEl.value, 10);
+  }
+  const ageEl = document.getElementById('playerAgeOverview');
+  if (ageEl) ageEl.textContent = finalAge;
+
+  // 3f) height sync
+  const heightEl = document.getElementById('playerHeightOverview');
+  if (heightEl) heightEl.textContent = heightValue;
+
+  // 3g) potential sync
+  const potDropdown = document.getElementById("potential");
+  const potentialEl = document.getElementById("playerPotentialOverview");
+  if (potDropdown && potentialEl) {
+    const selectedOption = potDropdown.options[potDropdown.selectedIndex];
+    potentialEl.textContent = selectedOption ? selectedOption.textContent : "--";
+  }
 }
+
+
+
+
 
 function applyTrainingToSeason(seasonNum) {
   const val = document.getElementById(`seasonApplyAll${seasonNum}`).value;
@@ -306,50 +492,63 @@ function addSeason() {
   const applyOpts = `<option value="">-- ${t.TrainingType} --</option>${opts}`;
 
   div.innerHTML = `
-    <h5>${t.SeasonLabel} ${seasonCount}</h5>
-    <div class="input-field">
-      <span>${t.AgeLabel}:</span>
-      <input
-        type="number"
-        id="seasonAge${seasonCount}"
-        class="season-age-input"
-        value="${baseAge + (seasonCount - 1)}">
-    </div>
-    <div class="input-field">
-      <span>${t.applyToAllWeeks}</span>
-      <select id="seasonApplyAll${seasonCount}" class="apply-all-select">
-        ${applyOpts}
-      </select>
-      <button
-        class="btn green"
-        data-i18n="applyButton"
-        onclick="applyTrainingToSeason(${seasonCount})">
-        ${t.applyButton}
-      </button>
-    </div>
-    <table class="highlight">
-      <thead>
-        <tr>
-          <th>${t.WeekLabel}</th>
-          <th>${t.TrainingType}</th>
-        </tr>
-      </thead>
-      <tbody id="seasonBody${seasonCount}">
-        ${Array.from({ length: 14 }, (_, i) => `
-          <tr>
-            <td>${t.WeekLabel} ${i + 1}</td>
-            <td>
-              <select class="training-select">
-                ${weekOpts}
-              </select>
-            </td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
+  <ul class="collapsible">
+    <li>
+      <div class="collapsible-header"><strong>${t.SeasonLabel} ${seasonCount}</strong></div>
+      <div class="collapsible-body">
+        <div class="input-field">
+          <span>${t.AgeLabel}:</span>
+          <input
+            type="number"
+            id="seasonAge${seasonCount}"
+            class="season-age-input"
+            value="${baseAge + (seasonCount - 1)}">
+        </div>
+        <div class="input-field">
+          <span>${t.applyToAllWeeks}</span>
+          <select id="seasonApplyAll${seasonCount}" class="apply-all-select">
+            ${applyOpts}
+          </select>
+          <button
+            class="btn green"
+            data-i18n="applyButton"
+            onclick="applyTrainingToSeason(${seasonCount})">
+            ${t.applyButton}
+          </button>
+        </div>
+        <table class="highlight">
+          <thead>
+            <tr>
+              <th>${t.WeekLabel}</th>
+              <th>${t.TrainingType}</th>
+            </tr>
+          </thead>
+          <tbody id="seasonBody${seasonCount}">
+            ${Array.from({ length: 14 }, (_, i) => `
+              <tr>
+                <td>${t.WeekLabel} ${i + 1}</td>
+                <td>
+                  <select class="training-select">
+                    ${weekOpts}
+                  </select>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </li>
+  </ul>
+`;
+
 
   container.appendChild(div);
+
+  const elems = div.querySelectorAll(".collapsible");
+  const instances = M.Collapsible.init(elems);
+  if (instances.length > 0) {
+    instances[0].open(0);
+  }
 
   // re-initialize all selects and listeners
   M.FormSelect.init(div.querySelectorAll("select"));
@@ -375,11 +574,6 @@ function removeSeason() {
   seasonCount--;
 }
 
-let seasonCount = 0;
-
-const heightOptions = ["175cm","178cm","180cm","183cm","185cm","188cm","190cm","193cm","196cm","198cm","201cm","203cm","206cm","208cm","211cm","213cm","216cm","218cm","221cm","224cm","226cm","229cm"];
-
-const potentialOptions = ["Speaker","Reserva","Jogador útil","6º Homem","Titular","Estrela","Super-estrela","Vedeta","Super-vedeta","MVP","Jogador Histórico","Melhor jogador de sempre"];
 
 function populateStaticDropdowns() {
   const h = document.getElementById("height"),
@@ -410,6 +604,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 2) Initialize ALL selects (coachQuality, height, potential, any season selects later)
   M.FormSelect.init(document.querySelectorAll('select'));
+ 
+
 
   // 3) Base‐stat inputs: JS, JR, … SB
   baseStats.forEach(stat => {
@@ -462,21 +658,21 @@ function exportTrainingPlan() {
     return;
   }
 
-  // Re-run the sim so playerStats reflect the latest inputs
+  // Re-run simulation to ensure stats are updated
   simulateTraining();
 
-  // Gather common info
   const coachSelect      = document.getElementById("coachQuality");
   const coachLevelLabel  = coachSelect.options[coachSelect.selectedIndex].text;
   const coachCoefficient = parseFloat(coachSelect.value);
   const height           = document.getElementById("height").value;
   const playerName       = document.getElementById("playerName").value;
 
-  // ——— Sheet 1: Training Plan ———
+  // Sheet 1: Training Plan
   const seasonPlan = [
     [ t.Season, t.Week, t.TrainingType, t.CoachLevel, t.Name ]
   ];
   const trainingData = [];
+
   for (let s = 1; s <= seasonCount; s++) {
     const age     = parseInt(document.getElementById(`seasonAge${s}`).value, 10);
     const selects = document.querySelectorAll(`#seasonBody${s} .training-select`);
@@ -494,13 +690,13 @@ function exportTrainingPlan() {
     });
   }
 
-  // ——— Sheet 2: Stat Progress by Week ———
+  // Sheet 2: Stat Progress
   const weeklyStats = [[
     t.Season, t.Week, t.Name, t.Height, t.Age,
-    ...baseStats.map(st => t[st] || st)
+    ...baseStats.map(st => t[st] || st),
+    "Skill Points"
   ]];
 
-  // pull starting stats from inputs
   const playerStats = {};
   baseStats.forEach(st => {
     playerStats[st] = parseFloat(document.getElementById(st).value) || 0;
@@ -512,61 +708,62 @@ function exportTrainingPlan() {
     const effect  = trainingEffects[training];
     if (!effect) return;
 
-    // 1) compute decay‐adjusted base gains
     const relevant = Object.keys(effect);
     const flatAvg  = relevant.reduce((sum, st) => sum + playerStats[st], 0) / relevant.length;
     const gains    = {};
+
     for (let st of relevant) {
       const baseGain    = effect[st] * ageCoef * coachCoefficient;
       const decayFactor = Math.pow(0.965, playerStats[st] - flatAvg);
       gains[st] = baseGain * decayFactor;
     }
 
-    // 2) elastic interactions
     for (let st in gains) {
       for (let key in elasticEffects) {
         const [b,tgt] = key.split("->");
-        if (b===st && playerStats[tgt] > playerStats[b]) {
+        if (b === st && playerStats[tgt] > playerStats[b]) {
           const diff = playerStats[tgt] - playerStats[b];
           gains[b] += gains[b] * (diff * elasticEffects[key]);
         }
       }
     }
 
-    // 3) height multiplier
     for (let st in gains) {
       gains[st] *= (heightMap[st] || 1);
     }
 
-    // 4) penalty if stat ≥16
     for (let st in gains) {
       if (playerStats[st] >= 16) gains[st] *= 0.8;
       playerStats[st] += gains[st];
     }
 
-    // record this week
+    // Skill points total
+    const outsideKeys = ['JS','JR','OD','HA','DR','PA'];
+    const insideKeys  = ['IS','ID','RB','SB'];
+    const outsideSum  = outsideKeys.reduce((sum,k) => sum + playerStats[k], 0);
+    const insideSum   = insideKeys.reduce((sum,k) => sum + playerStats[k], 0);
+    const totalSkill  = Math.ceil(outsideSum + insideSum);
+
     weeklyStats.push([
       `${t.Season} ${season}`,
       `${t.Week} ${week}`,
       playerName,
       height,
       age,
-      ...baseStats.map(st => playerStats[st].toFixed(2))
+      ...baseStats.map(st => playerStats[st].toFixed(2)),
+      totalSkill
     ]);
   });
 
-  // ——— Build & style the workbook ———
   const wb  = XLSX.utils.book_new();
   const ws1 = XLSX.utils.aoa_to_sheet(seasonPlan);
   const ws2 = XLSX.utils.aoa_to_sheet(weeklyStats);
 
-  // freeze header
   ws1['!freeze'] = { xSplit:0, ySplit:1 };
   ws2['!freeze'] = { xSplit:0, ySplit:1 };
 
   [ws1, ws2].forEach(ws => {
     const range = XLSX.utils.decode_range(ws["!ref"]);
-    // bold + center headers
     for (let C = range.s.c; C <= range.e.c; ++C) {
       const hdr = ws[XLSX.utils.encode_cell({r:0,c:C})];
       if (hdr) hdr.s = {
@@ -574,7 +771,6 @@ function exportTrainingPlan() {
         alignment: { horizontal:"center", vertical:"center" }
       };
     }
-    // auto‐width + center data
     const cols = [];
     for (let C = range.s.c; C <= range.e.c; ++C) {
       let mx = 10;
@@ -582,7 +778,7 @@ function exportTrainingPlan() {
         const cell = ws[XLSX.utils.encode_cell({r:R,c:C})];
         if (cell && cell.v != null) {
           mx = Math.max(mx, cell.v.toString().length);
-          if (R>0) cell.s = { alignment:{ horizontal:"center", vertical:"center" }};
+          if (R > 0) cell.s = { alignment:{ horizontal:"center", vertical:"center" }};
         }
       }
       cols.push({ wch: mx + 2 });
@@ -590,19 +786,61 @@ function exportTrainingPlan() {
     ws["!cols"] = cols;
   });
 
-  // append sheets with localized names
-  XLSX.utils.book_append_sheet(
-    wb, ws1,
-    lang === 'pt' ? "Plano de Treino" : "Training Plan"
-  );
-  XLSX.utils.book_append_sheet(
-    wb, ws2,
-    lang === 'pt' ? "Progresso Semanal" : "Weekly Progress"
-  );
+  XLSX.utils.book_append_sheet(wb, ws1, lang === 'pt' ? "Plano de Treino" : "Training Plan");
+  XLSX.utils.book_append_sheet(wb, ws2, lang === 'pt' ? "Progresso Semanal" : "Weekly Progress");
 
-  // download
-  XLSX.writeFile(wb, `Training_Plan_${lang}.xlsx`);
+  const safeName = playerName.replace(/\s+/g, '_');
+  XLSX.writeFile(wb, `Training_Plan_${safeName}_${lang}.xlsx`);
 }
+
+function exportPlayerOverviewCard() {
+  const accordionItem = document.querySelector('#playerOverviewAccordion li');
+  if (!accordionItem) {
+    alert("Player overview not found.");
+    return;
+  }
+
+  const lang = localStorage.getItem('lang') || 'en';
+  const t = i18n[lang];
+
+  const isOpen = accordionItem.classList.contains('active');
+  if (!isOpen) {
+    alert(t.collapsedExportWarning);
+    return;
+  }
+
+  const clone = accordionItem.cloneNode(true);
+  clone.style.padding = '20px';
+  clone.style.background = '#fff';
+  clone.style.width = accordionItem.offsetWidth + 'px';
+  clone.classList.add('active');
+  clone.querySelector('.collapsible-body').style.display = 'block';
+
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'fixed';
+  wrapper.style.top = '-9999px';
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  html2canvas(clone, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#fff'
+  }).then(canvas => {
+    const link = document.createElement('a');
+    const playerName = document.getElementById("playerNameHeader")?.textContent?.trim() || "player";
+    link.download = `${playerName.replace(/\s+/g, '_')}_overview.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    wrapper.remove();
+  }).catch(err => {
+    console.error("html2canvas failed:", err);
+  });
+}
+
+
+
+
 
 
 

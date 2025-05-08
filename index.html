@@ -5,7 +5,9 @@
   <title data-i18n="app_title">Basketball Training Simulator</title>
   <!-- Materialize CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
+    
     .fixed-controls {
   position: sticky;
   top: 0;
@@ -20,6 +22,15 @@
   margin-right: 0.75rem;
 }
 
+table td {
+  padding: 0 0.5rem;
+}
+td select#height,
+td .select-wrapper {
+  min-width: 80px !important;
+  padding-right: 4px !important; /* allows room for dropdown arrow */
+  box-sizing: border-box;
+}
 .player-card,
 .season-card {
   margin-bottom: 2rem;
@@ -49,6 +60,7 @@ select {
   border-bottom: none !important;
   background-image: none !important;
   margin-bottom: 0;
+  
 }
 
 select#coachQuality {
@@ -110,6 +122,11 @@ select#coachQuality {
   z-index: 2000 !important;
 }
 
+#playerFaceImg {
+  border-radius: 0 !important;
+}
+
+
   </style>
 </head>
 <!-- Google tag (gtag.js) -->
@@ -134,7 +151,19 @@ select#coachQuality {
         <div class="collapsible-header" data-i18n="instructionsHeader">
           <strong>Instruções e Tradução</strong>
         </div>
+        
         <div class="collapsible-body">
+
+          <!-- ⚠️ Localized Simulator Warning -->
+          <div class="card-panel yellow lighten-4 brown-text text-darken-4" style="margin-bottom:1rem;">
+            <i class="material-icons left">warning</i>
+            <strong data-i18n="simNoticeTitle">Atenção:</strong>
+            <span data-i18n="simulatorWarning">
+              Este simulador não considera infraestrutura do ginásio (Nível 1–3) nem treinador de jovens. Espere resultados um pouco mais rápidos no jogo real.
+            </span>
+          </div>
+        
+          
           <div class="row">
             <div class="col s12 m6">
               <strong data-i18n="instructionsTitle">Instruções:</strong>
@@ -243,6 +272,75 @@ select#coachQuality {
       </table>
     </div>
 
+    <ul id="playerOverviewAccordion" class="collapsible">
+      <li>
+        <div class="collapsible-header" style="display: flex; align-items: center;">
+          <img
+            id="playerCountryFlag"
+            src="https://buzzerbeater.com/images/flags/flag_18.gif"
+            alt="Country flag"
+            style="width: 20px; height: 14px; margin-right: 8px;"
+           
+          />
+          <span id="playerNameHeader" style="font-size: 1.5rem; font-weight: 500;"></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="row">
+            <!-- Left column: Player image + Info -->
+            <div class="col s3">
+              <div class="row" style="margin-bottom: 0;">
+                <div class="col s12 center-align">
+                  <img
+                    id="playerFaceImg"
+                    src="https://i.imgur.com/psgGagl.jpg"
+                    alt="Player Face"
+                    class="responsive-img"
+                   
+                  />
+                </div>
+                <div class="col s12">
+                  <p style="margin: 0;" ><strong data-i18n="ageAccordion">Idade:</strong> <span id="playerAgeOverview" >--</span></p>
+                  <p style="margin: 0;" ><strong data-i18n="heightAccordion">Altura:</strong> <span id="playerHeightOverview" >--</span></p>
+                  <p style="margin: 0;" ><strong data-i18n="potentialAccordion">Potencial:</strong> <span id="playerPotentialOverview">--</span></p>
+                </div>
+              </div>
+            </div>
+    
+            <!-- Right column: Stats + Points -->
+            <div class="col s9">
+              <div class="row">
+                <div class="col s6">
+                  <ul class="collection">
+                    <li class="collection-item"><strong data-i18n="JS_full"></strong>: <span id="statJS"></span></li>
+                    <li class="collection-item"><strong data-i18n="OD_full"></strong>: <span id="statOD"></span></li>
+                    <li class="collection-item"><strong data-i18n="DR_full"></strong>: <span id="statDR"></span></li>
+                    <li class="collection-item"><strong data-i18n="IS_full"></strong>: <span id="statIS"></span></li>
+                    <li class="collection-item"><strong data-i18n="RB_full"></strong>: <span id="statRB"></span></li>
+                  </ul>
+                </div>
+                <div class="col s6">
+                  <ul class="collection">
+                    <li class="collection-item"><strong data-i18n="JR_full"></strong>: <span id="statJR"></span></li>
+                    <li class="collection-item"><strong data-i18n="HA_full"></strong>: <span id="statHA"></span></li>
+                    <li class="collection-item"><strong data-i18n="PA_full"></strong>: <span id="statPA"></span></li>
+                    <li class="collection-item"><strong data-i18n="ID_full"></strong>: <span id="statID"></span></li>
+                    <li class="collection-item"><strong data-i18n="SB_full"></strong>: <span id="statSB"></span></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="right-align" style="margin-top:1rem;">
+                <strong data-i18n="skillPointsLabel">Skill points:</strong>
+                <span id="skillPointsTotal"></span>
+                <span id="skillPointsBreakdown"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    
+    
+    
     <!-- Stats After Training -->
     <div class="player-card">
       <h5 data-i18n="statsAfterHeader">Player Stats After Training</h5>
@@ -278,13 +376,23 @@ select#coachQuality {
            data-i18n="exportButton">
           Export Training Plan (.xlsx)
         </a>
+        <a class="waves-effect waves-light btn blue"
+          onclick="exportPlayerOverviewCard()"
+          data-i18n="exportImage">
+         
+        </a>
+
       </div>
     </div>
   </div>
+  
 
   <!-- Materialize JS + Translation + Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
   <script src="logic.js"></script>
   <script>
     
@@ -334,7 +442,13 @@ select#coachQuality {
         exportButton:"Export Training Plan (.xlsx)",
         applyButton: "Apply",
         applyToAllWeeks: "Apply to all weeks:",
-        
+        simNoticeTitle: "Attention",
+        simulatorWarning: "The simulator includes elastic effects and updated coefficients but does not account for Gym Infrastructure (Levels 1–3) or Youth Trainer. In the short term, you may gain more skills than simulated. In the long term, Gym can add ~10+ skills. Enjoy.",
+        collapsedExportWarning: "Please open the player overview before exporting.",
+        exportImage: "Save Image",
+        ageAccordion: "Age",
+        heightAccordion: "Height",
+        potentialAccordion: "Potential"
       },
       pt: {
         app_title: "Simulador de Treino de Basquetebol",
@@ -364,7 +478,7 @@ select#coachQuality {
         cq_competent:     "Competente",
         cq_advanced:      "Avançado",
         cq_superior:      "Superior",
-        cq_exceptional:   "Excecional",
+        cq_exceptional:   "Excepcional",
         cq_worldclass:    "Classe Mundial",
         coachQualityLabel:"Qualidade do Treinador",
         playerInputHeader:"Dados do Jogador",
@@ -381,7 +495,13 @@ select#coachQuality {
         exportButton:"Exportar Plano (.xlsx)",
         applyButton: "Aplicar Treino",
         applyToAllWeeks: "Aplicar para todas as semanas",
-        
+        simNoticeTitle: "Atenção",
+        simulatorWarning: " O simulador inclui o efeito elástico e os coeficientes de treino atualizados, mas não considera a Infraestrutura do Ginásio (Níveis 1–3) ou o Treinador de Jovens. A curto prazo, os jogadores ganham um pouo mais habilidades do que o simulado. A longo prazo, o Ginásio pode adicionar mais de 10 habilidades.",
+        collapsedExportWarning: "A secção do jogador tem que estar aberta para fazer a exportação da imagem",   
+        exportImage: "Guardar Imagem",
+        ageAccordion:"Idade",
+        heightAccordion: "Altura",
+        potentialAccordion: "Potencial"
       }
     };
 
@@ -427,6 +547,8 @@ select#coachQuality {
   document.addEventListener('DOMContentLoaded', () => {
     // init any collapsibles
     M.Collapsible.init(document.querySelectorAll('.collapsible'));
+    M.Collapsible.init(document.querySelectorAll('#playerOverviewAccordion'));
+
     // run our select logic first
     initSelects();
     // apply saved language (which also re‐runs initSelects)
