@@ -30,8 +30,8 @@ const trainingEffects = {
   "HA (PG)": { OD:0.1, DR:0.4, HA:0.5 },
   "HA (PG/SG)": { OD:0.075, DR:0.0375, HA:0.045 },
   "HA (PG/SG/SF)": { OD:0.04, DR:0.2, HA:0.25 },
-  "1v1 (PG/SG)": { JS:0.4, DR:0.45, HA:0.38 },
-  "1v1 (SF/PF)": { JS:0.2, DR:0.45, HA:0.38, IS:0.2 },
+  "1v1 (PG/SG)": { JS:0.35, DR:0.45, HA:0.38 },
+  "1v1 (SF/PF)": { JS:0.18, DR:0.45, HA:0.38, IS:0.19 },
   "1v1 (team)": { JS:0.088, DR:0.176, HA:0.22, IS:0.088 },
   "PA (PG)": { DR:0.16, HA:0.16, PA:0.6  },
   "PA (PG/SG)": { DR:0.12, HA:0.12, PA:0.45 },
@@ -146,7 +146,7 @@ window.translations = {
     applyToAllWeeks: "Apply to all weeks:",
     // baseStats abbreviations will be left as-is, or add entries here to translate them:
     JS: "JS", JR: "JR", OD: "OD", HA: "HA", DR: "DR",
-    PA: "PA", IS: "IS", ID: "ID", RB: "RB", SB: "SB"
+    PA: "PA", IS: "IS", ID: "ID", RB: "RB", SB: "SB",
   },
   pt: {
     Season:      "Temporada",
@@ -227,8 +227,21 @@ Object.assign(window.translations.en, {
     27: 'legendary',
     28: 'legendary',
     29: 'legendary',
-  }
-  
+  },
+  potentialLabels: {
+  "Speaker": "Speaker",
+  "Reserva": "Benchwarmer",
+  "Jogador útil": "Role Player",
+  "6º Homem": "6th Man",
+  "Titular": "Starter",
+  "Estrela": "Star",
+  "Super-estrela": "Allstar",
+  "Vedeta": "Pereniall Allstar",
+  "Super-vedeta": "Superstar",
+  "MVP": "MVP",
+  "Jogador Histórico": "Hall of Famer",
+  "Melhor jogador de sempre": "Alltime great"
+}
 });
 
 Object.assign(window.translations.pt, {
@@ -296,9 +309,21 @@ Object.assign(window.translations.pt, {
     27: 'lendário',
     28: 'lendário',
     29: 'lendário',
-   
-    
-  }
+  },
+  potentialLabels: {
+  "Speaker": "Speaker",
+  "Reserva": "Reserva",
+  "Jogador útil": "Jogador útil",
+  "6º Homem": "6º Homem",
+  "Titular": "Titular",
+  "Estrela": "Estrela",
+  "Super-estrela": "Super-estrela",
+  "Vedeta": "Vedeta",
+  "Super-vedeta": "Super-vedeta",
+  "MVP": "MVP",
+  "Jogador Histórico": "Jogador Histórico",
+  "Melhor jogador de sempre": "Melhor jogador de sempre"
+}
 });
 
 function renderPlayerOverview(name, age, playerStats, skillPoints) {
@@ -585,7 +610,12 @@ function populateStaticDropdowns() {
     h.addEventListener("change", simulateTraining);
   }
   if (p) {
-    p.innerHTML = potentialOptions.map(x => `<option value="${x}">${x}</option>`).join("");
+   const lang = localStorage.getItem('lang') || 'en';
+    const t = window.translations[lang];
+    p.innerHTML = potentialOptions.map(opt =>
+      `<option value="${opt}">${t.potentialLabels[opt] || opt}</option>`
+    ).join("");
+
     p.value = "MVP";
   }
 
