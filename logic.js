@@ -50,12 +50,12 @@ const trainingEffects = {
 };
 
 const elasticEffects = {
-  'JS->DR': 0.0211, 'JR->OD': 0.0371, 'OD->HA': 0.0352,
-  'PA->HA': 0.03, 'DR->JS': 0.0296, 'DR->PA': 0.0129,
+  'JS->DR': 0.0211, 'JR->OD': 0.0281, 'OD->HA': 0.0282,
+  'PA->HA': 0.025, 'DR->JS': 0.0216, 'DR->PA': 0.0129,
   'HA->OD': 0.0116, 'HA->PA': 0.0103, 'IS->JS': 0.0125,
-  'IS->ID': 0.0159, 'IS->RB': 0.0257, 'ID->IS': 0.153,
-  'RB->ID': 0.0371, 'SB->ID': 0.0197, 
-  'OD->ID': 0.0355
+  'IS->ID': 0.0159, 'IS->RB': 0.0157, 'ID->IS': 0.0153,
+  'RB->ID': 0.0171, 'SB->ID': 0.0127, 
+  'OD->ID': 0.0155
 };
 
 const heightMultipliers = {
